@@ -1,0 +1,228 @@
+/* C:\Users\Melody\Documents\haliberrycake\frontend\src\index.css */
+
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600&family=Poppins:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ─── Brand CSS Custom Properties ───────────────────────────────── */
+:root {
+  /* ----- Premium Luxury Bakery Palette ----- */
+  /* Backgrounds - Premium cream tones */
+  --ivory:        #FAF8F6;
+  --cream:        #F9F7F4;
+  --cream-white:  #FFFFFF;
+  --sand:         #F0E8E3;
+  
+  /* Accents - Sophisticated warm tones */
+  --chocolate:    #3D2817;      /* Rich deep brown - primary accent */
+  --taupe:        #A89080;      /* Warm taupe - secondary */
+  --blush:        #D4A9A0;      /* Soft rose - feminine accent */
+  --gold:         #C9A876;      /* Warm gold - luxury accent */
+  --rose:         #D4A9A0;
+  --petal:        #F4E6DC;
+  
+  /* Legacy compatibility */
+  --peach:        #A89080;      /* Maps to taupe for consistency */
+  --peach-light:  #C9A876;      /* Maps to gold */
+  --peach-dark:   #3D2817;      /* Maps to chocolate */
+  --apricot:      #D4A9A0;      /* Maps to blush */
+  --golden:       #C9A876;      /* Gold accent */
+
+  /* ----- Text colours ----- */
+  --text-primary:   #2D2620;    /* Deep chocolate text */
+  --text-secondary: #5F5A54;    /* Warm gray-brown */
+  --text-muted:     #8A8178;    /* Muted taupe */
+  --text-light:     #A89080;    /* Light taupe */
+
+  /* ----- Shadows - Warm and luxurious ----- */
+  --shadow-luxury:    0 4px 16px rgba(61, 40, 23, 0.12);
+  --shadow-luxury-lg: 0 10px 28px rgba(61, 40, 23, 0.16);
+
+  /* ----- Transitions ----- */
+  --transition-base: 0.32s cubic-bezier(0.22, 0.61, 0.36, 1);
+  --transition-slow: 0.55s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+/* ─── Base Resets ────────────────────────────────────────────────── */
+html, body, #root, #root > * {
+  box-sizing: border-box;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+html, body, #root {
+  height: 100% !important;
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
+  color: var(--text-primary);
+  background-color: var(--cream);
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
+  color: var(--text-primary);
+  background-color: var(--cream);
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+/* ─── Typography Utilities ───────────────────────────────────────── */
+.font-serif { font-family: 'Cormorant Garamond', serif; }
+
+h1, h2, h3, .heading {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 600;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+}
+
+/* ─── Luxury Link Style ──────────────────────────────────────────── */
+a {
+  text-decoration: none;
+  color: inherit;
+  transition: color var(--transition-base);
+}
+
+/* ─── Scrollbar Styling ──────────────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--cream);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--peach);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--peach-dark);
+}
+
+/* ─── Selection Color ────────────────────────────────────────────── */
+::selection {
+  background-color: var(--rose);
+  color: var(--text-primary);
+}
+
+/* ─── Component Layer ────────────────────────────────────────────── */
+@layer components {
+
+  /* Buttons */
+  .btn-primary {
+    @apply inline-flex items-center gap-2 px-7 py-3.5 rounded-full font-sans font-medium text-sm tracking-wide;
+    background: var(--peach);
+    color: white;
+    transition: var(--transition-base);
+    box-shadow: 0 10px 28px rgba(149, 113, 88, 0.2);
+  }
+  .btn-primary:hover {
+    background: var(--peach-dark);
+    transform: translateY(-1px);
+    box-shadow: 0 12px 36px rgba(149, 113, 88, 0.28);
+  }
+  .btn-primary:active { transform: translateY(0); }
+
+  .btn-outline {
+    @apply inline-flex items-center gap-2 px-7 py-3.5 rounded-full font-sans font-medium text-sm tracking-wide border;
+    border-color: var(--peach);
+    color: var(--text-secondary);
+    background: transparent;
+    transition: var(--transition-base);
+  }
+  .btn-outline:hover {
+    background: var(--sand);
+    border-color: var(--peach);
+    transform: translateY(-1px);
+  }
+
+  .btn-ghost {
+    @apply inline-flex items-center gap-2 px-5 py-3 rounded-full font-sans font-medium text-sm tracking-wide;
+    color: var(--text-primary);
+    border: 1.5px solid rgba(90, 75, 60, 0.18);
+    background: rgba(245, 239, 232, 0.26);
+    backdrop-filter: blur(8px);
+    transition: var(--transition-base);
+  }
+  .btn-ghost:hover {
+    background: rgba(245, 239, 232, 0.5);
+    border-color: rgba(90, 75, 60, 0.28);
+  }
+
+  /* Section Headings */
+  .section-eyebrow {
+    @apply font-sans text-xs font-medium tracking-[0.2em] uppercase;
+    color: var(--peach);
+  }
+
+  .section-title {
+    @apply font-serif;
+    font-size: clamp(2rem, 4vw, 3.25rem);
+    color: var(--text-primary);
+    font-weight: 600;
+    line-height: 1.1;
+  }
+
+  .section-subtitle {
+    @apply font-sans font-light;
+    font-size: clamp(1rem, 1.5vw, 1.125rem);
+    color: var(--text-secondary);
+    line-height: 1.7;
+  }
+
+  /* Cards */
+  .card-luxury {
+    background: var(--cream-white);
+    border-radius: 1.25rem;
+    box-shadow: var(--shadow-luxury);
+    transition: var(--transition-base);
+    overflow: hidden;
+  }
+  .card-luxury:hover {
+    box-shadow: var(--shadow-luxury-lg);
+    transform: translateY(-4px);
+  }
+
+  /* Gradient Backgrounds */
+  .bg-brand-gradient {
+    background: linear-gradient(135deg, var(--cream-white) 0%, var(--rose) 45%, var(--peach-light) 100%);
+  }
+  .bg-cream-section {
+    background: linear-gradient(180deg, var(--cream-white) 0%, var(--cream) 100%);
+  }
+
+  /* Decorative Divider */
+  .divider-ornament::before {
+    content: '✦';
+    color: var(--peach);
+    font-size: 0.75rem;
+    display: block;
+    text-align: center;
+  }
+}
+
+/* ─── Utility Layer ──────────────────────────────────────────────── */
+@layer utilities {
+  .text-balance { text-wrap: balance; }
+  .text-gradient {
+    background: linear-gradient(135deg, #7A5B41, #C5A68C);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .mask-fade-bottom {
+    -webkit-mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
+    mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
+  }
+}

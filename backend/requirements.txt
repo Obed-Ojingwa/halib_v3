@@ -1,0 +1,50 @@
+# Haliberry Cake — Backend Requirements
+#
+# Render is forcing Python 3.14.3 regardless of runtime.txt.
+# Solution: use latest pydantic stack (2.11.x) which ships cp314 manylinux wheels.
+# These are installed as pre-built binaries — no Rust compilation required.
+
+fastapi==0.115.12
+uvicorn[standard]==0.34.3
+
+# Database
+sqlalchemy==2.0.41
+alembic==1.15.2
+
+# Email validator
+email-validator==2.3.0
+pydantic[email]==2.13.0
+
+# PostgreSQL — binary wheel, zero compilation
+psycopg2-binary==2.9.10
+
+# Pydantic — latest versions have Python 3.14 pre-built wheels
+# pydantic==2.11.5 -- Previous versions
+pydantic==2.13.0
+pydantic-settings==2.9.1
+# Do NOT pin pydantic-core separately — let pydantic pull the correct version.
+# Pinning it caused pip to download the source tarball instead of the wheel.
+
+# Auth
+python-jose[cryptography]==3.3.0
+# Auth — using bcrypt directly (passlib 1.7.4 breaks with bcrypt>=4.0)
+bcrypt==4.3.0
+
+# passlib[bcrypt]==1.7.4
+
+# File uploads
+python-multipart==0.0.9
+aiofiles==24.1.0
+pillow==11.2.1
+
+# HTTP
+httpx==0.28.1
+
+# Rate limiting
+slowapi==0.1.9
+
+# Supabase
+supabase==2.15.2
+
+# Env
+python-dotenv==1.1.0
