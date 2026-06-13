@@ -35,6 +35,7 @@
   --text-secondary: #5F5A54;    /* Warm gray-brown */
   --text-muted:     #8A8178;    /* Muted taupe */
   --text-light:     #A89080;    /* Light taupe */
+  --text-new:      #000000;   /* New text color */
 
   /* ----- Shadows - Warm and luxurious ----- */
   --shadow-luxury:    0 4px 16px rgba(61, 40, 23, 0.12);
@@ -152,6 +153,14 @@ a {
     color: var(--text-primary);
     border: 1.5px solid rgba(90, 75, 60, 0.18);
     background: rgba(245, 239, 232, 0.26);
+    backdrop-filter: blur(8px);
+    transition: var(--transition-base);
+  }
+  .btn-check{
+    @apply inline-flex items-center gap-2 px-5 py-3 rounded-full font-sans font-medium text-sm tracking-wide;
+    color: var(--text-primary);
+    border: 1.5px solid rgba(70, 25, 205, 0.18);
+    background: rgba(151, 19, 19, 0.26);
     backdrop-filter: blur(8px);
     transition: var(--transition-base);
   }

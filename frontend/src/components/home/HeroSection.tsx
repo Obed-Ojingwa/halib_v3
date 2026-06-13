@@ -8,27 +8,47 @@ import { heroTextReveal, imageFloat, floatSlow } from '@/lib/animations'
 export default function HeroSection() {
   const featuredCakes = [
     {
-      image: '/images/cakes/cake1.jpg',
+      image: 'cake.avif',
       title: 'Wedding Cakes'
     },
     {
-      image: '/images/cakes/cake2.jpg',
+      image: 'cake.webp',
       title: 'Birthday Cakes'
     },
     {
-      image: '/images/cakes/cake3.jpg',
+      image: 'cakes.jpg',
       title: 'Cupcakes'
     },
     {
-      image: '/images/cakes/cake4.jpg',
+      image: 'cakess.jpg',
       title: 'Custom Orders'
-    }
+    },
+    // This is the second image to utilize on first element
+    
+  ]
+  const featuredCakes1=[
+    {
+      image: 'cakeee.jpeg',
+      title: 'Wedding Cakes'
+    },
+    {
+      image: 'cakeeeeee.jpeg',
+      title: 'Birthday Cakes'
+    },
+    {
+      image: 'cakeeee.jpeg',
+      title: 'Cupcakes'
+    },
+    {
+      image: 'cakee.jpeg',
+      title: 'Custom Orders'
+    },
   ]
   return (
     <section
   className="relative min-h-screen flex items-center overflow-hidden bg-[var(--cream)]"
   style={{
-    backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Ccircle fill=\'%23A89080\' fill-opacity=\'0.05\' cx=\'30\' cy=\'30\' r=\'6\'/%3E%3Cpath d=\'M36 34q-4 0-6-3t-2-6q0-4 3-6t6-2q4 0 6 3t2 6q0 4-3 6t-6 2z\' fill=\'%23A89080\' fill-opacity=\'0.05\'/%3E%3C/g%3E%3C/svg%3E")'
+    backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'10\' height=\'10\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Ccircle fill=\'%23A89080\' fill-opacity=\'0.05\' cx=\'30\' cy=\'30\' r=\'6\'/%3E%3Cpath d=\'M36 34q-4 0-6-3t-2-6q0-4 3-6t6-2q4 0 6 3t2 6q0 4-3 6t-6 2z\' fill=\'%23A89080\' fill-opacity=\'0.05\'/%3E%3C/g%3E%3C/svg%3E")'
   }}
 >
 
@@ -46,7 +66,7 @@ export default function HeroSection() {
 
       {/* Elegant floating cake layers */}
       <motion.div
-        className="absolute top-1/6 left-[-5%] w-[300px] h-[400px] opacity-[0.15] hidden lg:block"
+        className="absolute top-1/6 left-[-5%] w-[600px] h-[00px] opacity-[0.15] hidden lg:block"
         style={{
           background: 'radial-gradient(ellipse at center, rgba(168,144,128,0.04) 0%, transparent 70%)',
           borderRadius: '50%',
@@ -119,7 +139,13 @@ export default function HeroSection() {
         initial="rest"
         animate="float"
         transition={{ delay: 1.5 }}
+      >
+        <img 
+        src="mmmimage.jpg" 
+        alt="Featured luxury cake" 
+        className="w-full h-full object-cover transition-transform duration-700 hover:scale-105"
       />
+</motion.div>
 
       {/* Content */}
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-[1rem] pb-20 lg:pt-[2rem]">
@@ -148,10 +174,10 @@ export default function HeroSection() {
             animate="visible"
             className="font-serif mb-6"
             style={{
-              fontSize: 'clamp(2.5rem, 6vw, 5rem)',
+              fontSize: 80,
               lineHeight: '1.05',
               fontWeight: 600,
-              background: 'linear-gradient(135deg, var(--text-primary) 0%, var(--peach) 100%)',
+              background: 'var(--text-new)',
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
               backgroundClip: 'text'
@@ -165,12 +191,15 @@ export default function HeroSection() {
             custom={2}
             variants={heroTextReveal}
             initial="hidden"
-            animate="visible"
-            className="font-sans font-light mb-12 max-w-xl"
+            animate="visible"    
+            className="font-sans font-light mb-12 max-w-xl mx-auto"
             style={{
               fontSize: 'clamp(1rem, 1.8vw, 1.25rem)',
               color: 'var(--text-secondary)',
-              lineHeight: '1.8'
+              lineHeight: '1.8',
+              alignContent: "center",
+              textAlign:"center"
+
             }}
           >
             Luxury celebration cakes, bespoke dessert boxes, and artisan baking experiences
@@ -195,25 +224,89 @@ export default function HeroSection() {
               Join a Class
               <ArrowRight size={16} />
             </Link>
-            <Link to="/cic" className="btn-ghost">
+            <Link to="/cic" className="btn-check">
               <Heart size={18} />
               Support Our Mission
               <ArrowRight size={16} />
             </Link>
           </motion.div>
 
+          {/* Desktop only vertical space */}
+          <div className="hidden lg:block h-16" /> 
+
+          {/* Check this if it fails in mobile */}
+
           {/* Elegant decorative divider with cake emoji */}
           <motion.div
-            custom={4}
-            variants={heroTextReveal}
-            initial="hidden"
-            animate="visible"
-            className="flex items-center gap-6 mt-16 pt-10"
+            initial={{ opacity: 0, x: 40 }}
+      animate={{ opacity: 1, x: 0 }}
+      transition={{ duration: 0.8 }}
+      className="hidden lg:block"
             style={{ borderTop: '1px solid rgba(168,144,128,0.15)' }}
           >
-            <div className="w-[60px] h-[1px] bg-[var(--peach)]/30" />
+              <div className="flex flex-wrap justify-center gap-4">
+
+  {featuredCakes.map((cake, index) => (
+    <Link
+      key={index}
+      to="/shop"
+      className="group relative"
+    >
+      <div
+        className="
+          w-24 h-24
+          xl:w-28 xl:h-28
+          rounded-full
+          overflow-hidden
+          border-4
+          border-white
+          shadow-xl
+          transition-all
+          duration-500
+          group-hover:scale-110
+          group-hover:-translate-y-2
+        "
+      >
+        <img
+          src={cake.image}
+          alt={cake.title}
+          className="w-full h-full object-cover"
+        />
+      </div>
+
+      <div
+        className="
+          absolute
+          -bottom-8
+          left-1/2
+          -translate-x-1/2
+          whitespace-nowrap
+          opacity-0
+          group-hover:opacity-100
+          transition-all
+          duration-300
+        "
+      >
+        <span
+          className="
+            text-xs
+            px-3
+            py-1
+            rounded-full
+            bg-white
+            shadow-md
+          "
+          style={{ color: 'var(--text-primary)' }}
+        >
+          {cake.title}
+        </span>
+      </div>
+    </Link>
+  ))}
+</div>
+            {/* <div className="w-[60px] h-[1px] bg-[var(--peach)]/30" />
             <span className="font-serif text-[var(--peach)] text-xl">🎂</span>
-            <div className="w-[60px] h-[1px] bg-[var(--peach)]/30" />
+            <div className="w-[60px] h-[1px] bg-[var(--peach)]/30" /> */}
           </motion.div>
 
           {/* Social proof strip - Enhanced */}
@@ -258,50 +351,66 @@ export default function HeroSection() {
       transition={{ duration: 0.8 }}
       className="hidden lg:block"
     >
-      <div className="grid grid-cols-2 gap-5">
+      <div className="flex flex-wrap justify-center gap-4">
 
-        {featuredCakes.map((cake, index) => (
-          <Link
-            key={index}
-            to="/shop"
-            className="group relative overflow-hidden rounded-[28px] shadow-xl"
-          >
-            <div className="aspect-[4/5] overflow-hidden">
-              <img
-                src={cake.image}
-                alt={cake.title}
-                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-              />
-            </div>
-
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-
-            <div className="absolute bottom-0 left-0 right-0 p-5">
-              <div className="flex items-center justify-between">
-
-                <div>
-                  <h3 className="font-serif text-white text-lg font-semibold">
-                    {cake.title}
-                  </h3>
-
-                  <p className="text-white/80 text-sm">
-                    View Collection
-                  </p>
-                </div>
-
-                <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center">
-                  <ShoppingBag
-                    size={18}
-                    className="text-[var(--peach)]"
-                  />
-                </div>
-
-              </div>
-            </div>
-          </Link>
-        ))}
-
+  {featuredCakes1.map((cake, index) => (
+    <Link
+      key={index}
+      to="/shop"
+      className="group relative"
+    >
+      <div
+        className="
+          w-24 h-24
+          xl:w-28 xl:h-28
+          rounded-full
+          overflow-hidden
+          border-4
+          border-white
+          shadow-xl
+          transition-all
+          duration-500
+          group-hover:scale-110
+          group-hover:-translate-y-2
+        "
+      >
+        <img
+          src={cake.image}
+          alt={cake.title}
+          className="w-full h-full object-cover"
+        />
       </div>
+
+      <div
+        className="
+          absolute
+          -bottom-8
+          left-1/2
+          -translate-x-1/2
+          whitespace-nowrap
+          opacity-0
+          group-hover:opacity-100
+          transition-all
+          duration-300
+        "
+      >
+        <span
+          className="
+            text-xs
+            px-3
+            py-1
+            rounded-full
+            bg-white
+            shadow-md
+          "
+          style={{ color: 'var(--text-primary)' }}
+        >
+          {cake.title}
+        </span>
+      </div>
+    </Link>
+  ))}
+</div>
 
       <div
         className="mt-6 rounded-3xl p-6"
