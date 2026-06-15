@@ -1,4 +1,4 @@
-const WHATSAPP_PHONE = '+2348102544186' 
+const WHATSAPP_PHONE = '+447903647384' 
 const DEFAULT_MESSAGE = 'Hello%20Haliberry%20Cake%2C%20I%20would%20like%20to%20make%20an%20enquiry%20about%20your%20cakes%2Fclasses.'
 
 export default function WhatsAppFloatButton() {
