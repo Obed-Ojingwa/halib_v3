@@ -51,7 +51,7 @@ export default function Footer() {
             {/* Contact */}
             <div className="space-y-2.5">
               {[
-                { icon: <Phone size={14}/>, text: '+44 (0)7XXX XXX XXX' },
+                { icon: <Phone size={14}/>, text: '+44 7903 647384' },
                 { icon: <Mail size={14}/>,  text: 'Haliberry2016@gmail.com' },
                 { icon: <MapPin size={14}/>, text: 'London, United Kingdom' },
               ].map(({ icon, text }) => (
