@@ -1,3 +1,4 @@
+// C:\Users\Melody\Documents\haliberrycake\frontend\src\components\home\HaliberryCICSection.tsx
 import { motion } from 'framer-motion'
 import { fadeUp, staggerContainer } from '@/lib/animations'
 
@@ -30,6 +31,8 @@ export default function HaliberryCICSection() {
         </motion.div>
 
         <div className="grid gap-10 lg:grid-cols-[1.4fr_0.9fr] items-start">
+
+          {/* ── Left column: body copy ── */}
           <motion.div
             className="space-y-8"
             variants={staggerContainer}
@@ -92,14 +95,47 @@ export default function HaliberryCICSection() {
             </motion.div>
           </motion.div>
 
+          {/* ── Right column: card ── */}
           <motion.div
             className="space-y-8 rounded-[2rem] border border-[#F6E2B5] bg-white p-10 shadow-luxury"
             variants={fadeUp}
           >
             <div className="space-y-6">
-              <div className="rounded-[1.75rem] overflow-hidden bg-[var(--cream-white)]">
-                <div className="aspect-[4/5] bg-[var(--cream)]" />
+
+              {/* ── Founder image — this replaces the empty cream div ── */}
+              <div className="rounded-[1.75rem] overflow-hidden w-full">
+                <div className="aspect-[4/5] relative bg-[var(--cream)]">
+                  <img
+                    src="/ccake.jpeg"
+                    alt="Halimot — founder of Haliberry"
+                    className="absolute inset-0 w-full h-full object-cover object-top"
+                    onError={(e) => {
+                      const img = e.currentTarget as HTMLImageElement
+                      img.onerror = null
+                      img.style.display = 'none'
+                      const placeholder = img.nextElementSibling as HTMLElement | null
+                      if (placeholder) placeholder.style.display = 'flex'
+                    }}
+                  />
+                  {/* Fallback placeholder — only shown if image 404s */}
+                  <div
+                    className="absolute inset-0 hidden flex-col items-center justify-center gap-4"
+                    style={{ background: 'linear-gradient(160deg, var(--peach) 0%, var(--cream) 100%)' }}
+                    aria-hidden="true"
+                  >
+                    <span className="text-6xl">🌸</span>
+                    <span className="font-serif text-lg tracking-widest uppercase" style={{ color: 'var(--text-primary)' }}>
+                      Halimot
+                    </span>
+                    <span className="font-sans text-xs tracking-wider" style={{ color: 'var(--text-secondary)' }}>
+                      Founder, Haliberry
+                    </span>
+                  </div>
+                  {/* Subtle bottom fade */}
+                  <div className="absolute inset-x-0 bottom-0 h-1/4 bg-gradient-to-t from-black/10 to-transparent pointer-events-none" />
+                </div>
               </div>
+
               <div>
                 <h3 className="font-serif text-2xl font-semibold" style={{ color: 'var(--text-primary)' }}>
                   How We Do It
@@ -138,6 +174,7 @@ export default function HaliberryCICSection() {
               </p>
             </div>
           </motion.div>
+
         </div>
       </div>
     </section>
