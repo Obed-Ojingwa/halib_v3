@@ -8,6 +8,7 @@ import { Send, CheckCircle, Phone, Mail, MapPin, MessageCircle } from 'lucide-re
 import { inquiryApi } from '@/lib/api'
 import { fadeUp, fadeLeft, fadeRight, staggerContainer } from '@/lib/animations'
 import WhatsAppFloatButton from '@/components/ui/WhatsAppFloatButton'
+import { label } from 'framer-motion/client'
 
 const schema = z.object({
   name:         z.string().min(2, 'Please enter your name'),
@@ -87,6 +88,7 @@ export default function Contact() {
                 { icon:<Mail size={18}/>,    label:'Email',            value:'Haliberry2016@gmail.com', href:'mailto:Haliberry2016@gmail.com' },
                 { icon:<MapPin size={18}/>,  label:'Location',         value:'London, United Kingdom', href:undefined },
                 { icon:<MessageCircle size={18}/>, label:'Instagram',  value:'@haliberrycake', href:'https://instagram.com/haliberrycake' },
+                {icon:<MessageCircle size={18}/>, label:'TikTok', value:'@haliberrycake', href:'https://www.tiktok.com/@haliberrycake?_r=1&_t=ZS-97F4YD0JIlM'},
               ].map(({ icon, label, value, href })=>(
                 <motion.div key={label} variants={fadeLeft} className="flex items-start gap-4">
                   <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
