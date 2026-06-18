@@ -7,8 +7,8 @@ import { Menu, X, ShoppingBag } from 'lucide-react'
 const NAV_LINKS = [
   { label: 'Home',       href: '/' },
   { label: 'About',      href: '/about' },
-  { label: 'Shop',       href: '/shop' },
-  { label: 'Classes',    href: '/cake-classes' },
+  { label: 'Shop Cakes',       href: '/shop' },
+  { label: 'Baking Masterclasses',    href: '/cake-classes' },
   { label: 'Haliberry CIC', href: '/cic' },
   { label: 'Gallery',    href: '/gallery' },
   { label: 'Contact',    href: '/contact' },
