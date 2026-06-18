@@ -70,9 +70,9 @@ export default function AboutHero() {
           className="font-sans font-light max-w-xl"
           style={{ fontSize: 'clamp(1rem, 1.8vw, 1.2rem)', color: 'rgba(0,0,0,0.65)', lineHeight: '1.75' }}
         >
-          Baker. Entrepreneur. Community champion. A woman who turned the hardest
-          chapters of her life into the most beautiful creations, and built a luxury
-          brand rooted in healing, love, and artistry.
+          Cake artist. Entrepreneur. Community builder. Turning resilience into beauty, 
+          she crafts luxury creations that inspire hope, connection, and celebration.
+
         </motion.p>
       </div>
 
