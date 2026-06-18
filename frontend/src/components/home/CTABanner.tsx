@@ -60,16 +60,16 @@ export default function CTABanner() {
               style={{ color: 'var(--text-secondary)' }}
             >
               <Cake size={16} />
-              Order Your Cake
+              Order a Celebration Cake
               <ArrowRight size={15} />
             </Link>
             <Link
-              to="/cake-classes"
+              to="/cic"
               className="inline-flex items-center gap-2 font-sans font-medium text-sm px-7 py-3.5 rounded-full transition-all duration-300 hover:-translate-y-0.5"
               style={{ border: '2px solid rgba(0,0,0,0.7)', color: 'var(--text-secondary)' }}
             >
               <BookOpen size={16} />
-              Book a Baking Class
+              Explore Haliberry CIC
             </Link>
           </motion.div>
         </motion.div>
