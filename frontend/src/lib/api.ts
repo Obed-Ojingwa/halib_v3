@@ -47,6 +47,15 @@ export const productsApi = {
   },
 }
 
+// ─── Orders ───────────────────────────────────────────────────────
+export const ordersApi = {
+  create: (data: Record<string, unknown>) => api.post('/api/v1/orders', data),
+  list:   () => api.get('/api/v1/orders'),
+  get:    (id: string) => api.get(`/api/v1/orders/${id}`),
+  updateStatus: (id: string, data: Record<string, unknown>) => api.patch(`/api/v1/orders/${id}/status`, data),
+  receipt: (id: string) => api.get(`/api/v1/orders/${id}/receipt`, { responseType: 'blob' }),
+}
+
 // ─── Gallery ─────────────────────────────────────────────────────
 export const galleryApi = {
   list:   (params?: Record<string, unknown>) => api.get('/api/v1/gallery', { params }),

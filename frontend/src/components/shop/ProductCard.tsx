@@ -1,6 +1,7 @@
 // C:\Users\Melody\Documents\haliberrycake\frontend\src\components\shop\ProductCard.tsx
 import { motion } from 'framer-motion'
-import { MessageCircle, Star } from 'lucide-react'
+import { Link } from 'react-router-dom'
+import { MessageCircle, Star, ArrowRight } from 'lucide-react'
 import type { Product } from '@/types'
 import { fadeUp } from '@/lib/animations'
 
@@ -133,15 +134,24 @@ export default function ProductCard({ product, onInquire }: Props) {
 
         {/* Price + CTA */}
         <div
-          className="flex items-center justify-between pt-3"
+          className="flex flex-col gap-3 pt-3"
           style={{ borderTop: '1px solid var(--cream)' }}
         >
-          <span
-            className="font-serif font-semibold"
-            style={{ fontSize: '1.2rem', color: 'var(--text-primary)' }}
-          >
-            {product.price > 0 ? `£${product.price.toFixed(0)}` : 'POA'}
-          </span>
+          <div className="flex items-center justify-between">
+            <span
+              className="font-serif font-semibold"
+              style={{ fontSize: '1.2rem', color: 'var(--text-primary)' }}
+            >
+              {product.price > 0 ? `£${product.price.toFixed(0)}` : 'POA'}
+            </span>
+            <Link
+              to={`/product/${product.id}`}
+              className="inline-flex items-center gap-2 btn-outline py-2 px-4 text-xs"
+            >
+              View details
+              <ArrowRight size={12} />
+            </Link>
+          </div>
 
           <button
             onClick={() => onInquire(product)}

@@ -3,10 +3,11 @@ import { useState, useEffect } from 'react'
 import { Link, NavLink, useLocation } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Menu, X, ShoppingBag } from 'lucide-react'
+import { useCart } from '@/context/CartContext'
 
 const NAV_LINKS = [
   { label: 'Home',       href: '/' },
-  { label: 'About',      href: '/about' },
+  { label: 'Our Story',      href: '/about' },
   { label: 'Shop Cakes',       href: '/shop' },
   { label: 'Baking Masterclasses',    href: '/cake-classes' },
   { label: 'Haliberry CIC', href: '/cic' },
@@ -19,6 +20,7 @@ export default function Navbar() {
   const [scrolled, setScrolled]  = useState(false)
   const location = useLocation()
   const isHome = location.pathname === '/'
+  const { cartCount } = useCart()
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 60)
@@ -84,10 +86,19 @@ export default function Navbar() {
         {/* Desktop CTA */}
         <div className="hidden lg:flex items-center gap-3">
           <Link
+            to="/cart"
+            className="btn-outline flex items-center gap-2 text-xs py-2.5 px-4"
+          >
+            <ShoppingBag size={15} />
+            Cart
+            <span className="inline-flex h-5 min-w-[1.25rem] items-center justify-center rounded-full bg-[var(--peach)] px-2 text-[0.7rem] font-semibold text-white">
+              {cartCount}
+            </span>
+          </Link>
+          <Link
             to="/shop"
             className="btn-primary text-xs py-2.5 px-5"
           >
-            <ShoppingBag size={15} />
             Order Now
           </Link>
         </div>

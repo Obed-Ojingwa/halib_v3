@@ -26,6 +26,21 @@ class Settings(BaseSettings):
     frontend_url: str = "http://localhost:5173"
     production_url: str = "https://haliberrycake.co.uk"
 
+    # Email notification settings
+    email_smtp_host: Optional[str] = None
+    email_smtp_port: int = 587
+    email_smtp_user: Optional[str] = None
+    email_smtp_password: Optional[str] = None
+    email_from: Optional[str] = None
+    email_admin: Optional[str] = None
+    email_use_tls: bool = True
+
+    # SumUp payment settings
+    sumup_base_url: str = "https://api.sumup.com"
+    sumup_client_id: Optional[str] = None
+    sumup_client_secret: Optional[str] = None
+    sumup_pay_to_email: Optional[str] = None
+
     @property
     def cors_origins(self) -> list[str]:
         origins = {

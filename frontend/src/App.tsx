@@ -6,16 +6,19 @@ import PageLoader from '@/components/ui/PageLoader'
 import ProtectedRoute from '@/components/admin/ProtectedRoute'
 
 // Lazy-loaded pages for performance
-const Home        = lazy(() => import('@/pages/Home'))
-const About       = lazy(() => import('@/pages/About'))
-const Shop        = lazy(() => import('@/pages/Shop'))
-const CakeClasses = lazy(() => import('@/pages/CakeClasses'))
-const CIC         = lazy(() => import('@/pages/CIC'))
-const Gallery     = lazy(() => import('@/pages/Gallery'))
-const Testimonials= lazy(() => import('@/pages/Testimonials'))
-const Contact     = lazy(() => import('@/pages/Contact'))
-const AdminLogin  = lazy(() => import('@/pages/admin/AdminLogin'))
-const AdminDash   = lazy(() => import('@/pages/admin/AdminDashboard'))
+const Home         = lazy(() => import('@/pages/Home'))
+const About        = lazy(() => import('@/pages/About'))
+const Shop         = lazy(() => import('@/pages/Shop'))
+const ProductDetail= lazy(() => import('@/pages/ProductDetail'))
+const CartPage     = lazy(() => import('@/pages/Cart'))
+const OrderSuccess = lazy(() => import('@/pages/OrderSuccess'))
+const CakeClasses  = lazy(() => import('@/pages/CakeClasses'))
+const CIC          = lazy(() => import('@/pages/CIC'))
+const Gallery      = lazy(() => import('@/pages/Gallery'))
+const Testimonials = lazy(() => import('@/pages/Testimonials'))
+const Contact      = lazy(() => import('@/pages/Contact'))
+const AdminLogin   = lazy(() => import('@/pages/admin/AdminLogin'))
+const AdminDash    = lazy(() => import('@/pages/admin/AdminDashboard'))
 
 export default function App() {
   return (
@@ -23,14 +26,17 @@ export default function App() {
       <Routes>
         {/* ── Public site routes ── */}
         <Route element={<Layout />}>
-          <Route path="/"             element={<Home />} />
-          <Route path="/about"        element={<About />} />
-          <Route path="/shop"         element={<Shop />} />
-          <Route path="/cake-classes" element={<CakeClasses />} />
-          <Route path="/cic"          element={<CIC />} />
-          <Route path="/gallery"      element={<Gallery />} />
-          <Route path="/testimonials" element={<Testimonials />} />
-          <Route path="/contact"      element={<Contact />} />
+          <Route path="/"              element={<Home />} />
+          <Route path="/about"         element={<About />} />
+          <Route path="/shop"          element={<Shop />} />
+          <Route path="/product/:id"   element={<ProductDetail />} />
+          <Route path="/cart"          element={<CartPage />} />
+          <Route path="/order-success" element={<OrderSuccess />} />
+          <Route path="/cake-classes"  element={<CakeClasses />} />
+          <Route path="/cic"           element={<CIC />} />
+          <Route path="/gallery"       element={<Gallery />} />
+          <Route path="/testimonials"  element={<Testimonials />} />
+          <Route path="/contact"       element={<Contact />} />
         </Route>
         
 

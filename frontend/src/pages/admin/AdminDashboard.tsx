@@ -7,7 +7,7 @@ import {
   LayoutDashboard, Package, GalleryHorizontal, Star,
   MessageCircle, BookOpen, Heart, LogOut, Menu, X, Eye, Mail,
   Plus, Pencil, Trash2, CheckCircle, XCircle, Calendar, Clock, Users,
-  ImageIcon,
+  ImageIcon, ShoppingBag,
 } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 import { api, classesApi, testimonialsApi } from '@/lib/api'
@@ -15,6 +15,8 @@ import AdminProducts    from '@/components/admin/AdminProducts'
 import AdminGallery     from '@/components/admin/AdminGallery'
 import AdminInquiries   from '@/components/admin/AdminInquiries'
 import AdminSiteImages  from '@/components/admin/AdminSiteImages'
+import AdminOrders      from '@/components/admin/AdminOrders'
+import AdminOrderDetail from '@/components/admin/AdminOrderDetail'
 import {
   AdminPageHeader, AdminDrawer, ConfirmDialog,
   EmptyState, Badge, inputCls, labelCls, selectCls,
@@ -29,6 +31,7 @@ const NAV = [
   { label: 'Gallery',      href: '/admin/gallery',      icon: <GalleryHorizontal size={18}/> },
   { label: 'Site Images',  href: '/admin/site-images',  icon: <ImageIcon size={18}/> },
   { label: 'Testimonials', href: '/admin/reviews',      icon: <Star size={18}/> },
+  { label: 'Orders',       href: '/admin/orders',       icon: <ShoppingBag size={18}/> },
   { label: 'Inquiries',    href: '/admin/inquiries',    icon: <MessageCircle size={18}/> },
   { label: 'CIC',          href: '/admin/cic',          icon: <Heart size={18}/> },
 ]
@@ -487,6 +490,8 @@ export default function AdminDashboard() {
             <Route path="classes"     element={<AdminClasses />} />
             <Route path="gallery"     element={<AdminGallery />} />
             <Route path="site-images" element={<AdminSiteImages />} />
+            <Route path="orders"      element={<AdminOrders />} />
+            <Route path="orders/:orderId" element={<AdminOrderDetail />} />
             <Route path="reviews"     element={<AdminTestimonials />} />
             <Route path="inquiries"   element={<AdminInquiries />} />
             <Route path="cic"         element={<AdminCIC />} />
