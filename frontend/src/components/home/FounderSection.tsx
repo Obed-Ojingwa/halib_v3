@@ -21,39 +21,38 @@ export default function FounderSection() {
   const portraitUrl = useSiteImage('founder_portrait')
 
   return (
-    <section className="relative py-12 lg:py-24 overflow-hidden" style={{
-      background: 'linear-gradient(180deg, var(--cream-white) 0%, var(--cream) 100%)'
-    }}>
+    <section
+      className="relative py-14 lg:py-24 overflow-hidden"
+      style={{ background: 'linear-gradient(180deg, var(--cream-white) 0%, var(--cream) 100%)' }}
+    >
+      {/* Ambient orbs — desktop only */}
+      <motion.div
+        className="absolute top-0 left-0 w-[200px] h-[200px] rounded-full opacity-[0.08] hidden lg:block"
+        style={{
+          background: 'radial-gradient(circle at 30% 30%, rgba(149,113,88,0.15), transparent 70%)',
+          transform: 'translate(-20%, -20%)',
+        }}
+        variants={floatSlow}
+        initial="rest"
+        animate="float"
+        transition={{ delay: 0.5 }}
+      />
+      <motion.div
+        className="absolute bottom-0 right-0 w-[180px] h-[180px] rounded-full opacity-[0.06] hidden lg:block"
+        style={{
+          background: 'radial-gradient(circle at 70% 70%, rgba(149,113,88,0.12), transparent 70%)',
+          transform: 'translate(20%, 20%)',
+        }}
+        variants={floatSlow}
+        initial="rest"
+        animate="float"
+        transition={{ delay: 1.2 }}
+      />
+
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-28 items-center">
 
-        {/* Decorative elements */}
-        <motion.div
-          className="absolute top-0 left-0 w-[200px] h-[200px] rounded-full opacity-[0.08] hidden lg:block"
-          style={{
-            background: 'radial-gradient(circle at 30% 30%, rgba(149,113,88,0.15), transparent 70%)',
-            transform: 'translate(-20%, -20%)'
-          }}
-          variants={floatSlow}
-          initial="rest"
-          animate="float"
-          transition={{ delay: 0.5 }}
-        />
-        <motion.div
-          className="absolute bottom-0 right-0 w-[180px] h-[180px] rounded-full opacity-[0.06] hidden lg:block"
-          style={{
-            background: 'radial-gradient(circle at 70% 70%, rgba(149,113,88,0.12), transparent 70%)',
-            transform: 'translate(20%, 20%)'
-          }}
-          variants={floatSlow}
-          initial="rest"
-          animate="float"
-          transition={{ delay: 1.2 }}
-        />
-
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 lg:gap-28 items-center">
-
-          {/* Image column */}
+          {/* ── Image column ── */}
           <motion.div
             className="relative"
             variants={fadeLeft}
@@ -61,69 +60,77 @@ export default function FounderSection() {
             whileInView="visible"
             viewport={{ once: true, amount: 0.2 }}
           >
-            {/* Main image card */}
+            {/* Portrait frame */}
             <div
-              className="relative aspect-[4/5] rounded-[3rem] overflow-hidden"
+              className="relative rounded-[2.5rem] overflow-hidden"
               style={{
+                /* Tighter aspect on mobile — closer crop feels editorial */
+                aspectRatio: '4/4.5',
                 background: 'var(--cream)',
-                border: '2px solid rgba(149,113,88,0.2)'
+                border: '2px solid rgba(149,113,88,0.18)',
               }}
             >
               {portraitUrl ? (
                 <img
                   src={portraitUrl}
                   alt="Halimot — Founder of Haliberry Cake"
-                  className="absolute inset-0 w-full h-full object-cover"
+                  className="absolute inset-0 w-full h-full object-cover object-top"
                   onError={e => { (e.currentTarget as HTMLImageElement).style.display = 'none' }}
                 />
               ) : (
-                // Placeholder shown until admin uploads the portrait
                 <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-8">
-                  <div className="w-16 h-16 rounded-full flex items-center justify-center mb-4"
-                           style={{
-                             background: 'var(--peach)',
-                             boxShadow: '0 4px 12px rgba(149,113,88,0.3)'
-                           }}>
-                    <Heart size={24} style={{ color: 'white' }} />
+                  <div
+                    className="w-14 h-14 rounded-full flex items-center justify-center mb-3"
+                    style={{ background: 'var(--peach)', boxShadow: '0 4px 12px rgba(149,113,88,0.3)' }}
+                  >
+                    <Heart size={22} style={{ color: 'white' }} />
                   </div>
-                  <p className="font-serif italic" style={{ color: 'var(--text-muted)', fontSize: '1.1rem' }}>
+                  <p className="font-serif italic" style={{ color: 'var(--text-muted)', fontSize: '1rem' }}>
                     Halimot's portrait photo
                   </p>
-                  <p className="font-sans text-xs mt-2" style={{ color: 'var(--text-muted)' }}>
+                  <p className="font-sans text-xs mt-1.5" style={{ color: 'var(--text-muted)' }}>
                     Upload via Admin → Site Images
                   </p>
                 </div>
               )}
+
+              {/* Subtle bottom vignette */}
+              <div
+                className="absolute inset-x-0 bottom-0 h-1/3 pointer-events-none"
+                style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.12), transparent)' }}
+              />
             </div>
 
-            {/* Floating accent card - More elegant */}
+            {/* Floating stat card */}
             <motion.div
-              className="absolute -bottom-8 -right-6 lg:-right-10 bg-white rounded-2xl px-6 py-5 shadow-luxury max-w-[220px]"
+              className="absolute -bottom-6 -right-4 lg:-right-10 bg-white rounded-2xl px-5 py-4 shadow-luxury max-w-[200px]"
               animate={{ y: [0, -10, 0] }}
               transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
             >
-              <div className="flex items-center gap-3 mb-2">
-                <p className="font-serif font-semibold" style={{ fontSize: '2.5rem', color: 'var(--peach)' }}>6+</p>
-                <Heart size={14} color="var(--peach)" className="mt-0.5" />
+              <div className="flex items-center gap-2 mb-1">
+                <p className="font-serif font-semibold" style={{ fontSize: '2.25rem', color: 'var(--peach)', lineHeight: 1 }}>
+                  6+
+                </p>
+                <Heart size={13} color="var(--peach)" />
               </div>
-              <p className="font-sans text-sm" style={{ color: 'var(--text-secondary)' }}>
+              <p className="font-sans text-xs leading-snug" style={{ color: 'var(--text-secondary)' }}>
                 Years of baking artistry in London
               </p>
             </motion.div>
 
-            {/* Decorative dot pattern - More delicate */}
+            {/* Dot accent — hidden on small mobile to avoid clutter */}
             <div
-              className="absolute -top-8 -left-8 w-32 h-32 opacity-30"
+              className="absolute -top-6 -left-6 w-28 h-28 opacity-25 hidden sm:block"
               style={{
                 backgroundImage: 'radial-gradient(circle, var(--peach) 2px, transparent 2px)',
-                backgroundSize: '16px 16px',
+                backgroundSize: '14px 14px',
               }}
             />
           </motion.div>
 
-          {/* Text column */}
+          {/* ── Text column ── */}
           <motion.div
-            className="space-y-8"
+            className="space-y-5 lg:space-y-6"
             variants={staggerContainer}
             initial="hidden"
             whileInView="visible"
@@ -133,51 +140,58 @@ export default function FounderSection() {
               The Founder's Journey
             </motion.span>
 
-            <motion.h2 variants={fadeRight} className="section-title">
+            {/* ── FIX: unified font size + heavier weight on both words ── */}
+            <motion.h2
+              variants={fadeRight}
+              className="font-serif font-bold leading-[1.08] tracking-tight"
+              style={{ fontSize: 'clamp(2rem, 4.5vw, 3.25rem)', color: 'var(--text-primary)' }}
+            >
               From Healing to{' '}
-              <em className="not-italic" style={{
-                color: 'var(--peach)',
-                fontSize: '1.25rem'
-              }}>Flourishing</em>
+              <em
+                className="not-italic"
+                style={{ color: 'var(--peach)' }}
+              >
+                Flourishing
+              </em>
             </motion.h2>
 
-            <motion.p variants={fadeRight} className="section-subtitle">
+            <motion.p
+              variants={fadeRight}
+              className="font-sans font-light leading-relaxed"
+              style={{ color: 'var(--text-secondary)', fontSize: '0.975rem', lineHeight: '1.75' }}
+            >
               Halimot's journey began not in a kitchen, but in a moment of quiet resolve.
               Baking became her language — a way to process, to heal, to create beauty
               from the most difficult chapters of life.
             </motion.p>
 
-            <motion.p variants={fadeRight} className="font-sans font-light leading-relaxed" style={{
-              color: 'var(--text-secondary)',
-              fontSize: '1.05rem',
-              lineHeight: '1.7'
-            }}>
+            <motion.p
+              variants={fadeRight}
+              className="font-sans font-light leading-relaxed"
+              style={{ color: 'var(--text-secondary)', fontSize: '0.975rem', lineHeight: '1.75' }}
+            >
               Today, Haliberry Cake is more than a luxury bakery. It is a living testament to
               what happens when talent meets purpose. Every tier stacked, every flower placed,
               every box tied with ribbon carries the intention of a woman who turned her pain
               into something profoundly beautiful.
             </motion.p>
 
-            {/* Pull quote - More elegant */}
+            {/* Pull quote */}
             <motion.blockquote
               variants={fadeRight}
-              className="relative pl-6 py-3"
-              style={{
-                borderLeft: '4px solid var(--peach)',
-                paddingLeft: '24px'
-              }}
+              className="relative pl-5 py-2"
+              style={{ borderLeft: '3px solid var(--peach)' }}
             >
-              <p className="font-serif italic" style={{
-                fontSize: '1.3rem',
-                color: 'var(--text-primary)',
-                lineHeight: '1.6'
-              }}>
+              <p
+                className="font-serif italic"
+                style={{ fontSize: 'clamp(1.1rem, 2.2vw, 1.25rem)', color: 'var(--text-primary)', lineHeight: '1.6' }}
+              >
                 "I didn't just bake cakes — I baked my way back to myself."
               </p>
-              <cite className="font-sans text-xs tracking-wide mt-3 block not-italic" style={{
-                color: 'var(--text-muted)',
-                fontSize: '0.9rem'
-              }}>
+              <cite
+                className="font-sans text-xs tracking-wide mt-2.5 block not-italic"
+                style={{ color: 'var(--text-muted)' }}
+              >
                 — Halimot, Founder of Haliberry Cake
               </cite>
             </motion.blockquote>
@@ -185,30 +199,229 @@ export default function FounderSection() {
             <motion.div variants={fadeRight}>
               <Link to="/about" className="btn-primary inline-flex">
                 Read Halimot's Story
-                <ArrowRight size={16} />
+                <ArrowRight size={15} />
               </Link>
             </motion.div>
           </motion.div>
 
         </div>
-
-        </div>
-
-        {/* Bottom decorative flourish */}
-        <motion.div
-          className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[160px] h-[100px] opacity-[0.05] hidden lg:block"
-          style={{
-            backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=\'0 0 100 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cpath d=\'M5,55 Q15,35 25,45 T45,55 Q55,35 65,45 T85,55 Q95,35 95,25 L95,5 L5,5 Z\' fill=\'none\' stroke=\'%23957158\' stroke-width=\'1.5\' opacity=\'0.3\'/%3E%3C/svg%3E\")'
-          }}
-          variants={floatSlow}
-          initial="rest"
-          animate="float"
-          transition={{ delay: 0.8 }}
-        />
-    </div>
+      </div>
     </section>
   )
 }
+
+
+// // C:\Users\Melody\Documents\haliberrycake\frontend\src\components\home\FounderSection.tsx
+// import { Link } from 'react-router-dom'
+// import { motion } from 'framer-motion'
+// import { ArrowRight, Heart } from 'lucide-react'
+// import { useQuery } from '@tanstack/react-query'
+// import { api } from '@/lib/api'
+// import { fadeLeft, fadeRight, staggerContainer, floatSlow } from '@/lib/animations'
+
+// interface SiteSetting { key: string; image_url: string | null }
+
+// function useSiteImage(key: string): string | null {
+//   const { data } = useQuery<SiteSetting[]>({
+//     queryKey: ['site-settings'],
+//     queryFn: async () => (await api.get('/api/v1/site-settings')).data,
+//     staleTime: 1000 * 60 * 10,
+//   })
+//   return data?.find(s => s.key === key)?.image_url ?? null
+// }
+
+// export default function FounderSection() {
+//   const portraitUrl = useSiteImage('founder_portrait')
+
+//   return (
+//     <section className="relative py-12 lg:py-24 overflow-hidden" style={{
+//       background: 'linear-gradient(180deg, var(--cream-white) 0%, var(--cream) 100%)'
+//     }}>
+//       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+//         {/* Decorative elements */}
+//         <motion.div
+//           className="absolute top-0 left-0 w-[200px] h-[200px] rounded-full opacity-[0.08] hidden lg:block"
+//           style={{
+//             background: 'radial-gradient(circle at 30% 30%, rgba(149,113,88,0.15), transparent 70%)',
+//             transform: 'translate(-20%, -20%)'
+//           }}
+//           variants={floatSlow}
+//           initial="rest"
+//           animate="float"
+//           transition={{ delay: 0.5 }}
+//         />
+//         <motion.div
+//           className="absolute bottom-0 right-0 w-[180px] h-[180px] rounded-full opacity-[0.06] hidden lg:block"
+//           style={{
+//             background: 'radial-gradient(circle at 70% 70%, rgba(149,113,88,0.12), transparent 70%)',
+//             transform: 'translate(20%, 20%)'
+//           }}
+//           variants={floatSlow}
+//           initial="rest"
+//           animate="float"
+//           transition={{ delay: 1.2 }}
+//         />
+
+//         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+//           <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 lg:gap-28 items-center">
+
+//           {/* Image column */}
+//           <motion.div
+//             className="relative"
+//             variants={fadeLeft}
+//             initial="hidden"
+//             whileInView="visible"
+//             viewport={{ once: true, amount: 0.2 }}
+//           >
+//             {/* Main image card */}
+//             <div
+//               className="relative aspect-[4/5] rounded-[3rem] overflow-hidden"
+//               style={{
+//                 background: 'var(--cream)',
+//                 border: '2px solid rgba(149,113,88,0.2)'
+//               }}
+//             >
+//               {portraitUrl ? (
+//                 <img
+//                   src={portraitUrl}
+//                   alt="Halimot — Founder of Haliberry Cake"
+//                   className="absolute inset-0 w-full h-full object-cover"
+//                   onError={e => { (e.currentTarget as HTMLImageElement).style.display = 'none' }}
+//                 />
+//               ) : (
+//                 // Placeholder shown until admin uploads the portrait
+//                 <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-8">
+//                   <div className="w-16 h-16 rounded-full flex items-center justify-center mb-4"
+//                            style={{
+//                              background: 'var(--peach)',
+//                              boxShadow: '0 4px 12px rgba(149,113,88,0.3)'
+//                            }}>
+//                     <Heart size={24} style={{ color: 'white' }} />
+//                   </div>
+//                   <p className="font-serif italic" style={{ color: 'var(--text-muted)', fontSize: '1.1rem' }}>
+//                     Halimot's portrait photo
+//                   </p>
+//                   <p className="font-sans text-xs mt-2" style={{ color: 'var(--text-muted)' }}>
+//                     Upload via Admin → Site Images
+//                   </p>
+//                 </div>
+//               )}
+//             </div>
+
+//             {/* Floating accent card - More elegant */}
+//             <motion.div
+//               className="absolute -bottom-8 -right-6 lg:-right-10 bg-white rounded-2xl px-6 py-5 shadow-luxury max-w-[220px]"
+//               animate={{ y: [0, -10, 0] }}
+//               transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
+//             >
+//               <div className="flex items-center gap-3 mb-2">
+//                 <p className="font-serif font-semibold" style={{ fontSize: '2.5rem', color: 'var(--peach)' }}>6+</p>
+//                 <Heart size={14} color="var(--peach)" className="mt-0.5" />
+//               </div>
+//               <p className="font-sans text-sm" style={{ color: 'var(--text-secondary)' }}>
+//                 Years of baking artistry in London
+//               </p>
+//             </motion.div>
+
+//             {/* Decorative dot pattern - More delicate */}
+//             <div
+//               className="absolute -top-8 -left-8 w-32 h-32 opacity-30"
+//               style={{
+//                 backgroundImage: 'radial-gradient(circle, var(--peach) 2px, transparent 2px)',
+//                 backgroundSize: '16px 16px',
+//               }}
+//             />
+//           </motion.div>
+
+//           {/* Text column */}
+//           <motion.div
+//             className="space-y-8"
+//             variants={staggerContainer}
+//             initial="hidden"
+//             whileInView="visible"
+//             viewport={{ once: true, amount: 0.2 }}
+//           >
+//             <motion.span variants={fadeRight} className="section-eyebrow block">
+//               The Founder's Journey
+//             </motion.span>
+
+//             <motion.h2 variants={fadeRight} className="section-title">
+//               From Healing to{' '}
+//               <em className="not-italic" style={{
+//                 color: 'var(--peach)',
+//                 fontSize: '1.25rem'
+//               }}>Flourishing</em>
+//             </motion.h2>
+
+//             <motion.p variants={fadeRight} className="section-subtitle">
+//               Halimot's journey began not in a kitchen, but in a moment of quiet resolve.
+//               Baking became her language — a way to process, to heal, to create beauty
+//               from the most difficult chapters of life.
+//             </motion.p>
+
+//             <motion.p variants={fadeRight} className="font-sans font-light leading-relaxed" style={{
+//               color: 'var(--text-secondary)',
+//               fontSize: '1.05rem',
+//               lineHeight: '1.7'
+//             }}>
+//               Today, Haliberry Cake is more than a luxury bakery. It is a living testament to
+//               what happens when talent meets purpose. Every tier stacked, every flower placed,
+//               every box tied with ribbon carries the intention of a woman who turned her pain
+//               into something profoundly beautiful.
+//             </motion.p>
+
+//             {/* Pull quote - More elegant */}
+//             <motion.blockquote
+//               variants={fadeRight}
+//               className="relative pl-6 py-3"
+//               style={{
+//                 borderLeft: '4px solid var(--peach)',
+//                 paddingLeft: '24px'
+//               }}
+//             >
+//               <p className="font-serif italic" style={{
+//                 fontSize: '1.3rem',
+//                 color: 'var(--text-primary)',
+//                 lineHeight: '1.6'
+//               }}>
+//                 "I didn't just bake cakes — I baked my way back to myself."
+//               </p>
+//               <cite className="font-sans text-xs tracking-wide mt-3 block not-italic" style={{
+//                 color: 'var(--text-muted)',
+//                 fontSize: '0.9rem'
+//               }}>
+//                 — Halimot, Founder of Haliberry Cake
+//               </cite>
+//             </motion.blockquote>
+
+//             <motion.div variants={fadeRight}>
+//               <Link to="/about" className="btn-primary inline-flex">
+//                 Read Halimot's Story
+//                 <ArrowRight size={16} />
+//               </Link>
+//             </motion.div>
+//           </motion.div>
+
+//         </div>
+
+//         </div>
+
+//         {/* Bottom decorative flourish */}
+//         <motion.div
+//           className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[160px] h-[100px] opacity-[0.05] hidden lg:block"
+//           style={{
+//             backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=\'0 0 100 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cpath d=\'M5,55 Q15,35 25,45 T45,55 Q55,35 65,45 T85,55 Q95,35 95,25 L95,5 L5,5 Z\' fill=\'none\' stroke=\'%23957158\' stroke-width=\'1.5\' opacity=\'0.3\'/%3E%3C/svg%3E\")'
+//           }}
+//           variants={floatSlow}
+//           initial="rest"
+//           animate="float"
+//           transition={{ delay: 0.8 }}
+//         />
+//     </div>
+//     </section>
+//   )
+// }
 
 // // C:\Users\Melody\Documents\haliberrycake\frontend\src\components\home\FounderSection.tsx
 // import { Link } from 'react-router-dom'
