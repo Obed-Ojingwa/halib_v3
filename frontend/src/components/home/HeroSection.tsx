@@ -102,11 +102,11 @@ export default function HeroSection() {
             variants={heroTextReveal} custom={0}
             className="inline-flex items-center gap-3 mb-6"
           >
-            <div className="w-8 h-px bg-gradient-to-r from-transparent via-[var(--peach)] to-[var(--peach)]" />
-            <span className="font-mono text-xs tracking-[3px] uppercase text-[var(--peach)] font-medium">
+            <div className="w-8 h-0.5 bg-black" />
+            <span className="font-mono text-xs tracking-[3px] uppercase text-black font-medium">
               ESTABLISHED 2020 · LONDON'S FINEST
             </span>
-            <div className="w-8 h-px bg-gradient-to-r from-[var(--peach)] to-transparent" />
+            <div className="w-8 h-0.5 bg-black" />
           </motion.div>
 
           <motion.h1
@@ -212,11 +212,11 @@ export default function HeroSection() {
           variants={heroTextReveal} custom={0}
           className="inline-flex items-center gap-2 mb-4"
         >
-          <div className="w-6 h-px bg-[var(--peach)]" />
-          <span className="font-mono text-[9px] tracking-[2.5px] uppercase text-[var(--peach)] font-medium">
+          <div className="w-6 h-0.5 bg-black" />
+          <span className="font-mono text-[9px] tracking-[2.5px] uppercase text-black font-medium">
             ESTABLISHED 2020 · LONDON'S FINEST
-          </span>
-          <div className="w-6 h-px bg-[var(--peach)]" />
+            </span>
+            <div className="w-6 h-0.5 bg-black" />
         </motion.div>
 
         {/* ── Instagram-style Stories Carousel ── */}
