@@ -41,10 +41,10 @@ const STATUS_OPTIONS = [
 ]
 
 function statusBadge(status: Order['status']) {
-  const mapping: Record<Order['status'], { colour: string; label: string }> = {
-    pending: { colour: 'yellow', label: 'Pending' },
+  const mapping: Record<Order['status'], { colour: 'green' | 'red' | 'peach' | 'grey'; label: string }> = {
+    pending: { colour: 'peach', label: 'Pending' },
     paid: { colour: 'green', label: 'Paid' },
-    processing: { colour: 'blue', label: 'Processing' },
+    processing: { colour: 'grey', label: 'Processing' },
     completed: { colour: 'green', label: 'Completed' },
     cancelled: { colour: 'red', label: 'Cancelled' },
   }
@@ -56,14 +56,14 @@ export default function AdminOrderDetail() {
   const qc = useQueryClient()
   const { orderId } = useParams()
 
-  const { data: order, isLoading } = useQuery<Order | null>(
-    ['admin-order', orderId],
-    async () => {
+ const { data: order, isLoading } = useQuery<Order | null>({
+    queryKey: ['admin-order', orderId],
+    queryFn: async () => {
       if (!orderId) return null
       return (await ordersApi.get(orderId)).data as Order
     },
-    { enabled: Boolean(orderId) },
-  )
+    enabled: Boolean(orderId),
+  })
 
   const updateStatus = useMutation({
     mutationFn: ({ status }: { status: Order['status'] }) =>
