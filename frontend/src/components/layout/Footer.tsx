@@ -128,11 +128,15 @@ export default function Footer() {
       {/* Bottom bar */}
       <div style={{ borderTop: '1px solid var(--sand)' }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col sm:flex-row items-center justify-between gap-3">
-          <p className="font-sans text-xs" style={{ color: 'var(--text-muted)' }}>
+          <p className="font-sans text-[0.8rem] leading-5 text-center sm:text-left" style={{ color: 'var(--text-muted)' }}>
             © {new Date().getFullYear()} Haliberry Cake Ltd. All rights reserved. Registered in England & Wales.
           </p>
-          <p className="font-sans text-xs flex items-center gap-1" style={{ color: 'var(--text-muted)' }}>
-            Made with <Heart size={11} fill="var(--peach)" style={{ color: 'var(--peach)' }} /> in London
+          <p className="font-sans text-[0.8rem] leading-5 text-center sm:text-right flex flex-col sm:flex-row items-center gap-1" style={{ color: 'var(--text-muted)' }}>
+            <span>Made with</span>
+            <span className="inline-flex items-center gap-1">
+              <Heart size={11} fill="var(--peach)" style={{ color: 'var(--peach)' }} />
+              in London
+            </span>
           </p>
         </div>
       </div>

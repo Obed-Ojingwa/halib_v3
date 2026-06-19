@@ -1,5 +1,5 @@
 // C:\Users\Melody\Documents\haliberrycake\frontend\src\components\layout\Navbar.tsx
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { Link, NavLink, useLocation } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Menu, X, ShoppingBag } from 'lucide-react'
@@ -30,8 +30,52 @@ export default function Navbar() {
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
+  const drawerRef = useRef<HTMLDivElement>(null)
+  const closeButtonRef = useRef<HTMLButtonElement>(null)
+
   // Close mobile menu on route change
   useEffect(() => setMenuOpen(false), [location])
+
+  useEffect(() => {
+    if (!menuOpen) {
+      document.body.style.overflow = ''
+      return
+    }
+
+    document.body.style.overflow = 'hidden'
+    closeButtonRef.current?.focus()
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setMenuOpen(false)
+        return
+      }
+
+      if (event.key !== 'Tab' || !drawerRef.current) return
+
+      const focusableElements = drawerRef.current.querySelectorAll<HTMLElement>(
+        'a[href], button:not([disabled]), input:not([disabled]), textarea:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])'
+      )
+      if (!focusableElements.length) return
+
+      const firstElement = focusableElements[0]
+      const lastElement = focusableElements[focusableElements.length - 1]
+
+      if (event.shiftKey && document.activeElement === firstElement) {
+        event.preventDefault()
+        lastElement.focus()
+      } else if (!event.shiftKey && document.activeElement === lastElement) {
+        event.preventDefault()
+        firstElement.focus()
+      }
+    }
+
+    document.addEventListener('keydown', handleKeyDown)
+    return () => {
+      document.body.style.overflow = ''
+      document.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [menuOpen])
 
   interface SiteSetting { key: string; image_url: string | null }
 
@@ -129,45 +173,89 @@ export default function Navbar() {
           onClick={() => setMenuOpen(v => !v)}
           className="lg:hidden p-2 rounded-lg transition-colors"
           aria-label={menuOpen ? 'Close menu' : 'Open menu'}
+          aria-expanded={menuOpen}
+          aria-controls="mobile-navigation-drawer"
           style={{ color: scrolled || !isHome ? 'var(--text-primary)' : 'white' }}
         >
           {menuOpen ? <X size={22} /> : <Menu size={22} />}
         </button>
       </nav>
 
-      {/* Mobile Slide-down Menu */}
+      {/* Mobile Drawer */}
       <AnimatePresence>
         {menuOpen && (
           <motion.div
             key="mobile-menu"
-            initial={{ opacity: 0, y: -16 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -16 }}
-            transition={{ duration: 0.25 }}
-            className="lg:hidden absolute top-full left-0 right-0 bg-[var(--cream-white)]/98 backdrop-blur-md shadow-luxury-lg border-t border-[var(--cream)]"
+            className="lg:hidden absolute inset-x-0 top-full z-40"
+            initial="hidden"
+            animate="visible"
+            exit="hidden"
+            variants={{
+              hidden: { opacity: 0 },
+              visible: { opacity: 1 },
+            }}
+            transition={{ duration: 0.2 }}
           >
-            <ul className="px-6 py-6 flex flex-col gap-4">
-              {NAV_LINKS.map(({ label, href }) => (
-                <li key={href}>
-                  <NavLink
+            <motion.div
+              className="absolute inset-0 bg-black/40 backdrop-blur-sm"
+              onClick={() => setMenuOpen(false)}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+            />
+
+            <motion.div
+              ref={drawerRef}
+              id="mobile-navigation-drawer"
+              role="dialog"
+              aria-modal="true"
+              aria-label="Mobile navigation drawer"
+              tabIndex={-1}
+              initial={{ x: '-100%' }}
+              animate={{ x: 0 }}
+              exit={{ x: '-100%' }}
+              transition={{ type: 'spring', stiffness: 260, damping: 30 }}
+              className="relative z-50 w-[88vw] max-w-sm min-h-[calc(100vh-72px)] overflow-y-auto bg-[var(--cream-white)] p-6 shadow-2xl border-r border-[var(--cream)]"
+            >
+              <div className="flex items-center justify-between gap-4">
+                <span className="font-sans text-lg font-semibold tracking-wide text-[var(--text-primary)]">
+                  Navigation
+                </span>
+                <button
+                  ref={closeButtonRef}
+                  type="button"
+                  onClick={() => setMenuOpen(false)}
+                  className="rounded-full p-2 text-[var(--text-primary)] transition-colors hover:bg-black/5 focus:outline-none focus:ring-2 focus:ring-[var(--peach)]"
+                >
+                  <X size={22} />
+                  <span className="sr-only">Close menu</span>
+                </button>
+              </div>
+
+              <nav className="mt-8 space-y-3">
+                {NAV_LINKS.map(({ label, href }) => (
+                  <Link
+                    key={href}
                     to={href}
-                    className={({ isActive }) =>
-                      `block font-sans text-base font-medium py-1 border-b border-cream transition-colors ${
-                        isActive ? 'text-[var(--peach)]' : 'text-[var(--text-primary)]'
-                      }`
-                    }
+                    onClick={() => setMenuOpen(false)}
+                    className="block rounded-2xl border border-[var(--sand)] bg-white px-4 py-3 text-base font-medium text-[var(--text-primary)] transition-colors duration-200 hover:border-[var(--peach)] hover:text-[var(--peach)]"
                   >
                     {label}
-                  </NavLink>
-                </li>
-              ))}
-              <li className="pt-2">
-                <Link to="/shop" className="btn-primary w-full justify-center">
+                  </Link>
+                ))}
+              </nav>
+
+              <div className="mt-6">
+                <Link
+                  to="/shop"
+                  onClick={() => setMenuOpen(false)}
+                  className="btn-primary w-full justify-center"
+                >
                   <ShoppingBag size={16} />
                   Order a Cake
                 </Link>
-              </li>
-            </ul>
+              </div>
+            </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
