@@ -79,6 +79,8 @@ export default function Navbar() {
 
   interface SiteSetting { key: string; image_url: string | null }
 
+  const closeMenu = () => setMenuOpen(false)
+
   const { data: siteSettings } = useQuery<SiteSetting[]>({
     queryKey: ['site-settings'],
     queryFn: async () => (await api.get('/api/v1/site-settings')).data,
@@ -237,7 +239,7 @@ export default function Navbar() {
                   <Link
                     key={href}
                     to={href}
-                    onClick={() => setMenuOpen(false)}
+                    onClick={closeMenu}
                     className="block rounded-2xl border border-[var(--sand)] bg-white px-4 py-3 text-base font-medium text-[var(--text-primary)] transition-colors duration-200 hover:border-[var(--peach)] hover:text-[var(--peach)]"
                   >
                     {label}
@@ -248,7 +250,7 @@ export default function Navbar() {
               <div className="mt-6">
                 <Link
                   to="/shop"
-                  onClick={() => setMenuOpen(false)}
+                  onClick={closeMenu}
                   className="btn-primary w-full justify-center"
                 >
                   <ShoppingBag size={16} />

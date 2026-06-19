@@ -31,10 +31,10 @@ export default function Footer() {
 
       {/* Top band */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
-        <div className="grid grid-cols-1 lg:grid-cols-5 gap-12">
+        <div className="grid grid-cols-1 gap-10 lg:grid-cols-[minmax(220px,1.4fr)_repeat(3,minmax(0,1fr))] lg:items-start">
 
           {/* Brand column */}
-          <div className="lg:col-span-2 space-y-6">
+          <div className="space-y-6">
             <div>
               <p className="font-serif font-bold" style={{ fontSize: 'clamp(1.5rem,3vw,2rem)', color: 'var(--chocolate)' }}>
                 Haliberry Cake
@@ -61,67 +61,57 @@ export default function Footer() {
                 </div>
               ))}
             </div>
+          </div>
 
-            {/* Social */}
-            <div className="flex items-center gap-3">
+          {/* Nav columns */}
+          <div className="grid grid-cols-2 gap-6 sm:grid-cols-3 lg:col-span-3">
+            {FOOTER_NAV.map(({ group, links }) => (
+              <div key={group}>
+                <p className="font-sans text-xs font-semibold tracking-[0.18em] uppercase mb-4" style={{ color: 'var(--peach)' }}>
+                  {group}
+                </p>
+                <ul className="space-y-2">
+                  {links.map(({ label, href }) => (
+                    <li key={label}>
+                      <Link
+                        to={href}
+                        className="font-sans text-sm transition-colors duration-200 hover:text-[var(--peach)]"
+                        style={{ color: 'var(--text-secondary)' }}
+                      >
+                        {label}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+
+          {/* Social icons row for mobile and desktop alignment */}
+          <div className="lg:col-span-1 lg:self-end">
+            <div className="mt-2 flex justify-center gap-3 sm:justify-start">
               {[
                 { Icon: Instagram, href: 'https://instagram.com/haliberrycake', label: 'Instagram' },
                 { Icon: null, href: 'https://tiktok.com/@haliberrycake', label: 'TikTok' },
               ].map(({ Icon, href, label }) => (
-                <>
-                  {Icon ? (
-                    <a
-                      key={label}
-                      href={href}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      aria-label={label}
-                      className="w-9 h-9 rounded-full flex items-center justify-center transition-all duration-300 hover:-translate-y-0.5"
-                      style={{ background: 'var(--peach)', color: 'white' }}
-                    >
-                      <Icon size={16} />
-                    </a>
-                  ) : (
-                    <a
-                      key={label}
-                      href={href}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      aria-label={label}
-                      className="w-9 h-9 rounded-full flex items-center justify-center transition-all duration-300 hover:-translate-y-0.5"
-                      style={{ background: 'var(--peach)', color: 'white' }}
-                    >
-                      <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
-                        <path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V9.07a8.14 8.14 0 004.78 1.52V7.15a4.85 4.85 0 01-1.01-.46z"/>
-                      </svg>
-                    </a>
+                <a
+                  key={label}
+                  href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={label}
+                  className="w-11 h-11 min-w-[44px] min-h-[44px] rounded-full flex items-center justify-center transition-all duration-300 hover:-translate-y-0.5"
+                  style={{ background: 'var(--peach)', color: 'white' }}
+                >
+                  {Icon ? <Icon size={16} /> : (
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                      <path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V9.07a8.14 8.14 0 004.78 1.52V7.15a4.85 4.85 0 01-1.01-.46z"/>
+                    </svg>
                   )}
-                </>
+                </a>
               ))}
             </div>
           </div>
-
-          {/* Nav columns */}
-          {FOOTER_NAV.map(({ group, links }) => (
-            <div key={group}>
-              <p className="font-sans text-xs font-semibold tracking-[0.18em] uppercase mb-4" style={{ color: 'var(--peach)' }}>
-                {group}
-              </p>
-              <ul className="space-y-2">
-                {links.map(({ label, href }) => (
-                  <li key={label}>
-                    <Link
-                      to={href}
-                      className="font-sans text-sm transition-colors duration-200 hover:text-[var(--peach)]"
-                      style={{ color: 'var(--text-secondary)' }}
-                    >
-                      {label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
         </div>
       </div>
 
