@@ -40,6 +40,7 @@ class Settings(BaseSettings):
     sumup_client_id: Optional[str] = None
     sumup_client_secret: Optional[str] = None
     sumup_pay_to_email: Optional[str] = None
+    sumup_webhook_secret: Optional[str] = None
 
     @property
     def cors_origins(self) -> list[str]:
@@ -49,7 +50,7 @@ class Settings(BaseSettings):
             "https://haliberrycake.vercel.app",
             "https://haliberrycake.co.uk",
             "https://haliberry-v1.vercel.app/",
-            "https://haliberry-v3.vercel.app/",
+            "https://haliberry-v3.vercel.app",
             self.frontend_url.rstrip("/"),
             self.production_url.rstrip("/"),
         }

@@ -16,6 +16,11 @@ interface SiteSetting {
 
 // ── Human-readable labels for each setting key ───────────────────
 const SETTING_META: Record<string, { label: string; description: string; emoji: string }> = {
+  brand_logo: {
+    label: 'Brand logo',
+    description: 'Logo shown in the public site header and on premium PDF receipts.',
+    emoji: '🪪',
+  },
   hero_background: {
     label: 'Homepage Hero Background',
     description: 'Full-width background image shown behind the main heading on the homepage.',
@@ -213,9 +218,18 @@ export default function AdminSiteImages() {
   })
 
   // Ensure we always show all 4 cards, even before data loads
-  const ORDERED_KEYS = ['hero_background', 'founder_portrait', 'about_image_1', 'about_image_2']
+  const ORDERED_KEYS = ['brand_logo', 'hero_background', 'founder_portrait', 'about_image_1', 'about_image_2']
 
   const settingMap = Object.fromEntries(settings.map(s => [s.key, s]))
+  const placeholderSettings = ORDERED_KEYS.map((key) =>
+    settingMap[key] ?? {
+      id: key,
+      key,
+      image_url: null,
+      caption: null,
+      updated_at: new Date().toISOString(),
+    },
+  )
 
   return (
     <div>
@@ -256,11 +270,9 @@ export default function AdminSiteImages() {
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-          {ORDERED_KEYS.map(key => {
-            const setting = settingMap[key]
-            if (!setting) return null
-            return <SiteImageCard key={key} setting={setting} />
-          })}
+          {placeholderSettings.map(setting => (
+            <SiteImageCard key={setting.key} setting={setting} />
+          ))}
         </div>
       )}
     </div>
