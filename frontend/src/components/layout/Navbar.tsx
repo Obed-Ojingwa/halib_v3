@@ -79,7 +79,7 @@ export default function Navbar() {
 
   interface SiteSetting { key: string; image_url: string | null }
 
-  const closeMenu = () => setMenuOpen(false)
+  const closeMenu = () => setMenuOpen(true)
 
   const { data: siteSettings } = useQuery<SiteSetting[]>({
     queryKey: ['site-settings'],
