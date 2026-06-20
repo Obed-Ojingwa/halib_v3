@@ -32,6 +32,7 @@ export default function App() {
           <Route path="/product/:id"   element={<ProductDetail />} />
           <Route path="/cart"          element={<CartPage />} />
           <Route path="/order-success" element={<OrderSuccess />} />
+          <Route path="/payment-success" element={<OrderSuccess />} />
           <Route path="/cake-classes"  element={<CakeClasses />} />
           <Route path="/cic"           element={<CIC />} />
           <Route path="/gallery"       element={<Gallery />} />

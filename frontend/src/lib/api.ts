@@ -50,6 +50,7 @@ export const productsApi = {
 // ─── Orders ───────────────────────────────────────────────────────
 export const ordersApi = {
   create: (data: Record<string, unknown>) => api.post('/api/v1/orders', data),
+  verifyPayment: (checkout_id: string) => api.post('/api/v1/orders/verify-payment', { checkout_id }),
   list:   () => api.get('/api/v1/orders'),
   get:    (id: string) => api.get(`/api/v1/orders/${id}`),
   updateStatus: (id: string, data: Record<string, unknown>) => api.patch(`/api/v1/orders/${id}/status`, data),
