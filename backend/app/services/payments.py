@@ -19,9 +19,10 @@ def _sumup_headers() -> dict[str, str]:
     }
 
 
-def create_sumup_checkout(order: Order, success_url: str, cancel_url: str) -> Optional[dict[str, str]]:
+def create_sumup_checkout(order: Order, success_url: str, cancel_url: str) -> dict[str, str]:
     if not _credentials_ready():
-        return None
+        logger.error('SumUp secret key is not configured')
+        raise HTTPException(status_code=500, detail='SumUp credentials are not configured')
 
     checkout_url = f"{settings.sumup_base_url.rstrip('/')}/v0.1/checkouts"
     description = f'Order {order.id} — Haliberry Cake'
@@ -39,8 +40,8 @@ def create_sumup_checkout(order: Order, success_url: str, cancel_url: str) -> Op
         payload['pay_to_email'] = settings.sumup_pay_to_email
 
     headers = _sumup_headers()
-    response = httpx.post(checkout_url, json=payload, headers=headers, timeout=20)
     try:
+        response = httpx.post(checkout_url, json=payload, headers=headers, timeout=20)
         response.raise_for_status()
     except httpx.HTTPStatusError as exc:
         logger.error(
@@ -49,7 +50,13 @@ def create_sumup_checkout(order: Order, success_url: str, cancel_url: str) -> Op
             exc.response.status_code,
             exc.response.text,
         )
-        raise
+        raise HTTPException(
+            status_code=500,
+            detail=f"SumUp checkout creation failed: {exc.response.status_code} {exc.response.text}",
+        )
+    except httpx.RequestError as exc:
+        logger.error('SumUp request failed: %s', exc)
+        raise HTTPException(status_code=500, detail=f"SumUp request failed: {exc}")
 
     result = response.json()
 
