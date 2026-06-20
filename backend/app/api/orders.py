@@ -12,6 +12,7 @@ from app.schemas.order import (
     OrderCreate, OrderResponse, OrderStatusUpdate,
     OrderCheckoutResponse, OrderPaymentVerifyRequest,
 )
+from httpx import HTTPStatusError
 from app.core.auth import get_current_admin
 from app.services.payments import create_sumup_checkout, retrieve_sumup_checkout
 from app.services.pdf import create_order_receipt
@@ -75,7 +76,13 @@ def create_order(
     if order.payment_method == 'sumup':
         success_url = f"{settings.frontend_url.rstrip('/')}/payment-success?checkout_id={{checkout_id}}"
         cancel_url = f"{settings.frontend_url.rstrip('/')}/shop"
-        checkout_data = create_sumup_checkout(order, success_url, cancel_url)
+        try:
+            checkout_data = create_sumup_checkout(order, success_url, cancel_url)
+        except HTTPStatusError as exc:
+            raise HTTPException(
+                status_code=500,
+                detail=f"Unable to create SumUp checkout: {exc.response.status_code} {exc.response.text}",
+            )
         if not checkout_data:
             raise HTTPException(status_code=500, detail="Unable to create SumUp checkout. Please try again later.")
         order.sumup_checkout_url = checkout_data.get('checkout_url')

@@ -1,6 +1,7 @@
 from typing import Optional
 import logging
 import httpx
+from fastapi import HTTPException
 from app.core.config import settings
 from app.models.order import Order
 
