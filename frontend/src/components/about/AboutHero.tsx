@@ -1,19 +1,25 @@
 // C:\Users\Melody\Documents\haliberrycake\frontend\src\components\about\AboutHero.tsx
 import { motion } from 'framer-motion'
-import { useQuery } from '@tanstack/react-query'
-import { api } from '@/lib/api'
+// import { useQuery } from '@tanstack/react-query'
+// import { api } from '@/lib/api'
 import { heroTextReveal } from '@/lib/animations'
 
 interface SiteSetting { key: string; image_url: string | null }
 
 export default function AboutHero() {
-  const { data: settings } = useQuery<SiteSetting[]>({
-    queryKey: ['site-settings'],
-    queryFn: async () => (await api.get('/api/v1/site-settings')).data,
-    staleTime: 1000 * 60 * 10,
-  })
+  // Admin-panel image fetch — commented out for now, rolling back to static public-dir image.
+  // To re-enable later, uncomment this block and the portraitUrl line below it,
+  // then remove the static portraitUrl assignment.
+  //
+  // const { data: settings } = useQuery<SiteSetting[]>({
+  //   queryKey: ['site-settings'],
+  //   queryFn: async () => (await api.get('/api/v1/site-settings')).data,
+  //   staleTime: 1000 * 60 * 10,
+  // })
+  // const portraitUrl = settings?.find(s => s.key === 'founder_portrait')?.image_url ?? null
 
-  const portraitUrl = settings?.find(s => s.key === 'founder_portrait')?.image_url ?? null
+  // Static image served from the public directory instead.
+  const portraitUrl = '/purewhite.avif'
 
   return (
     <section
