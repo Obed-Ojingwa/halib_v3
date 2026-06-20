@@ -1,7 +1,10 @@
 from typing import Optional
+import logging
 import httpx
 from app.core.config import settings
 from app.models.order import Order
+
+logger = logging.getLogger(__name__)
 
 
 def _credentials_ready() -> bool:
@@ -19,7 +22,7 @@ def create_sumup_checkout(order: Order, success_url: str, cancel_url: str) -> Op
     if not _credentials_ready():
         return None
 
-    checkout_url = f"{settings.sumup_base_url.rstrip('/')}/v1/checkouts"
+    checkout_url = f"{settings.sumup_base_url.rstrip('/')}/v0.1/checkouts"
     description = f'Order {order.id} — Haliberry Cake'
     payload = {
         'amount': str(order.total_amount),
@@ -36,7 +39,17 @@ def create_sumup_checkout(order: Order, success_url: str, cancel_url: str) -> Op
 
     headers = _sumup_headers()
     response = httpx.post(checkout_url, json=payload, headers=headers, timeout=20)
-    response.raise_for_status()
+    try:
+        response.raise_for_status()
+    except httpx.HTTPStatusError as exc:
+        logger.error(
+            'SumUp checkout creation failed: %s %s %s',
+            checkout_url,
+            exc.response.status_code,
+            exc.response.text,
+        )
+        raise
+
     result = response.json()
 
     return {
