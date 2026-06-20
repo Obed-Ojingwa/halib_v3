@@ -7,6 +7,7 @@ export default function OrderSuccess() {
   const [searchParams] = useSearchParams()
   const checkoutId = searchParams.get('checkout_id')
   const orderIdQuery = searchParams.get('order_id')
+  const sumupReturn = searchParams.get('sumup')
 
   const [orderId, setOrderId] = useState<string | null>(orderIdQuery)
   const [status, setStatus] = useState<string | null>(null)
@@ -14,12 +15,14 @@ export default function OrderSuccess() {
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    if (!checkoutId) {
+    const shouldVerify = sumupReturn === '1' || sumupReturn === 'true' || Boolean(checkoutId)
+    if (!shouldVerify) {
       return
     }
 
+    const payload = orderIdQuery && sumupReturn ? { order_id: orderIdQuery } : { checkout_id: checkoutId ?? undefined }
     setLoading(true)
-    ordersApi.verifyPayment(checkoutId)
+    ordersApi.verifyPayment(payload)
       .then((response) => {
         setOrderId(response.data.id)
         setStatus(response.data.status)
@@ -32,10 +35,12 @@ export default function OrderSuccess() {
         )
       })
       .finally(() => setLoading(false))
-  }, [checkoutId])
+  }, [checkoutId, orderIdQuery, sumupReturn])
+
+  const isSumupReturn = sumupReturn === '1' || sumupReturn === 'true' || Boolean(checkoutId)
 
   const headline = useMemo(() => {
-    if (checkoutId) {
+    if (isSumupReturn) {
       if (loading) return 'Verifying your payment'
       if (error) return 'Payment verification issue'
       if (status === 'paid') return 'Payment confirmed'
@@ -43,10 +48,10 @@ export default function OrderSuccess() {
       return 'Order received'
     }
     return 'Your order is confirmed'
-  }, [checkoutId, loading, status, error])
+  }, [isSumupReturn, loading, status, error])
 
   const message = useMemo(() => {
-    if (checkoutId) {
+    if (isSumupReturn) {
       if (loading) return 'Hold tight while we confirm your payment with SumUp.'
       if (error) return 'There was a problem verifying your payment. Please check your email or contact us.'
       if (status === 'paid') return 'Your payment is complete and your cake order has been confirmed.'
@@ -54,7 +59,7 @@ export default function OrderSuccess() {
       return 'We have received your order and are processing the payment.'
     }
     return 'We have received your order and a member of the Haliberry Cake team will reach out shortly to confirm the details.'
-  }, [checkoutId, loading, status, error])
+  }, [isSumupReturn, loading, status, error])
 
   return (
     <section className="py-28 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto text-center">

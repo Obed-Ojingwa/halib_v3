@@ -74,15 +74,11 @@ def create_order(
 
     payment_url = None
     if order.payment_method == 'sumup':
-        success_url = f"{settings.frontend_url.rstrip('/')}/payment-success?checkout_id={{checkout_id}}"
-        cancel_url = f"{settings.frontend_url.rstrip('/')}/shop"
+        success_url = f"{settings.frontend_url.rstrip('/')}/payment-success?order_id={order.id}&sumup=1"
         try:
-            checkout_data = create_sumup_checkout(order, success_url, cancel_url)
-        except HTTPStatusError as exc:
-            raise HTTPException(
-                status_code=500,
-                detail=f"Unable to create SumUp checkout: {exc.response.status_code} {exc.response.text}",
-            )
+            checkout_data = create_sumup_checkout(order, success_url)
+        except HTTPException:
+            raise
         if not checkout_data:
             raise HTTPException(status_code=500, detail="Unable to create SumUp checkout. Please try again later.")
         order.sumup_checkout_url = checkout_data.get('checkout_url')
@@ -199,11 +195,20 @@ def _finalize_sumup_payment(order: Order, checkout_data: dict[str, object], db: 
 
 @router.post("/verify-payment", response_model=OrderResponse)
 def verify_sumup_payment(payload: OrderPaymentVerifyRequest, db: Session = Depends(get_db)):
-    order = db.query(Order).filter(Order.sumup_checkout_id == payload.checkout_id).first()
+    if not payload.checkout_id and not payload.order_id:
+        raise HTTPException(status_code=400, detail="checkout_id or order_id is required")
+
+    if payload.order_id:
+        order = db.query(Order).filter(Order.id == payload.order_id).first()
+    else:
+        order = db.query(Order).filter(Order.sumup_checkout_id == payload.checkout_id).first()
+
     if not order:
         raise HTTPException(status_code=404, detail="Order not found")
+    if not order.sumup_checkout_id:
+        raise HTTPException(status_code=400, detail="Order has no associated SumUp checkout")
 
-    checkout_data = retrieve_sumup_checkout(payload.checkout_id)
+    checkout_data = retrieve_sumup_checkout(order.sumup_checkout_id)
     if not checkout_data:
         raise HTTPException(status_code=400, detail="Unable to retrieve SumUp checkout")
 

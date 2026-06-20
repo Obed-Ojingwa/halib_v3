@@ -58,7 +58,8 @@ class OrderStatusUpdate(BaseModel):
 
 
 class OrderPaymentVerifyRequest(BaseModel):
-    checkout_id: str
+    checkout_id: Optional[str] = None
+    order_id: Optional[str] = None
 
 
 class OrderCheckoutResponse(BaseModel):

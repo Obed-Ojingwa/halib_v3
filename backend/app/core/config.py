@@ -39,6 +39,7 @@ class Settings(BaseSettings):
     sumup_base_url: str = "https://api.sumup.com"
     sumup_public_key: Optional[str] = None
     sumup_secret_key: Optional[str] = None
+    sumup_merchant_code: Optional[str] = None
     sumup_pay_to_email: Optional[str] = None
 
     @property

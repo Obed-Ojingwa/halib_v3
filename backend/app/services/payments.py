@@ -19,7 +19,7 @@ def _sumup_headers() -> dict[str, str]:
     }
 
 
-def create_sumup_checkout(order: Order, success_url: str, cancel_url: str) -> dict[str, str]:
+def create_sumup_checkout(order: Order, success_url: str) -> dict[str, str]:
     if not _credentials_ready():
         logger.error('SumUp secret key is not configured')
         raise HTTPException(status_code=500, detail='SumUp credentials are not configured')
@@ -27,15 +27,15 @@ def create_sumup_checkout(order: Order, success_url: str, cancel_url: str) -> di
     checkout_url = f"{settings.sumup_base_url.rstrip('/')}/v0.1/checkouts"
     description = f'Order {order.id} — Haliberry Cake'
     payload = {
-        'amount': str(order.total_amount),
+        'amount': float(order.total_amount),
         'currency': 'GBP',
         'checkout_reference': order.id,
-        'merchant_reference': order.id,
-        'return_url': success_url,
-        'cancel_url': cancel_url,
-        'title': 'Haliberry Cake Order',
         'description': description,
+        'redirect_url': success_url,
+        'hosted_checkout': {'enabled': True},
     }
+    if settings.sumup_merchant_code:
+        payload['merchant_code'] = settings.sumup_merchant_code
     if settings.sumup_pay_to_email:
         payload['pay_to_email'] = settings.sumup_pay_to_email
 
