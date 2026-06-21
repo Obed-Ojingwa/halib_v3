@@ -4,6 +4,8 @@ import { motion } from 'framer-motion'
 import { ArrowRight, Cake, BookOpen, Heart } from 'lucide-react'
 import { fadeUp, staggerContainer } from '@/lib/animations'
 
+const sumupDonationUrl = import.meta.env.VITE_SUMUP_DONATION_URL ?? 'https://haliberrycake.co.uk/cic'
+
 export default function AboutCTA() {
   return (
     <section className="py-24 lg:py-32" style={{ background: 'white' }}>
@@ -47,13 +49,15 @@ export default function AboutCTA() {
                 >
                   <BookOpen size={16} /> Book a Class
                 </Link>
-                <Link
-                  to="/cic"
+                <a
+                  href={sumupDonationUrl}
+                  target="_blank"
+                  rel="noreferrer noopener"
                   className="inline-flex items-center gap-2 font-sans font-medium text-sm px-7 py-3.5 rounded-full transition-all hover:-translate-y-0.5"
                   style={{ border: '2px solid rgba(0,0,0,0.7)', color: 'var(--text-secondary)' }}
                 >
                   <Heart size={16} /> Support the CIC
-                </Link>
+                </a>
               </motion.div>
             </motion.div>
           </div>
