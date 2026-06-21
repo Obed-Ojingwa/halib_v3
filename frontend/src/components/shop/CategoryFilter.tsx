@@ -4,11 +4,15 @@ import type { ProductCategory } from '@/types'
 
 const CATEGORIES: { value: ProductCategory | 'all'; label: string; emoji: string }[] = [
   { value: 'all',      label: 'All Cakes',     emoji: '🎂' },
-  { value: 'wedding',  label: 'Wedding',        emoji: '💍' },
-  { value: 'birthday', label: 'Birthday',       emoji: '🎉' },
+  { value: 'celebration cakes',  label: 'celebration cakes',        emoji: '🎁' },
+  { value: 'wedding cakes', label: 'Wedding Cakes',       emoji: '💍' },
   { value: 'cupcakes', label: 'Cupcakes',       emoji: '🧁' },
-  { value: 'desserts', label: 'Dessert Boxes',  emoji: '🎁' },
-  { value: 'treats',   label: 'Luxury Treats',  emoji: '✨' },
+  { value: 'loaf cakes', label: 'Loaf Cakes',  emoji: '🍞' },
+  { value: 'cookies & cookie dippers',   label: 'Cookies & Cookie Dippers',  emoji: '🍪' },
+  { value: 'dessert boxes',   label: 'Dessert Boxes',  emoji: '🍮' },
+  { value: 'sweet treats',   label: 'Sweet Treats',  emoji: '✨' },
+  { value: 'african treats collection',   label: 'African Treats Collection',  emoji: '🌍' },
+  { value: 'learn with haliberry',   label: 'Learn With Haliberry',  emoji: '🎓' },
 ]
 
 interface Props {

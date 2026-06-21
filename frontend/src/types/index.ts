@@ -14,11 +14,15 @@ export interface Product {
 }
 
 export type ProductCategory =
-  | 'wedding'
-  | 'birthday'
+  | 'celebration cakes'
+  | 'wedding cakes'
   | 'cupcakes'
-  | 'desserts'
-  | 'treats'
+  | 'loaf cakes'
+  | 'cookies & cookie dippers'
+  | 'dessert boxes'
+  | 'sweet treats'
+  | 'african treats collection'
+  | 'learn with haliberry'
 
 export interface CakeClass {
   id: number | string
