@@ -1,6 +1,8 @@
 import uuid
 from datetime import datetime, timezone
 from decimal import Decimal, InvalidOperation
+import logging
+
 from fastapi import APIRouter, Depends, HTTPException, Response, status
 from sqlalchemy.orm import Session
 from typing import List, Optional
@@ -20,6 +22,7 @@ from app.services.pdf import create_order_receipt
 from app.services.email import send_order_notification
 from app.core.config import settings
 
+logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/orders", tags=["Orders"])
 
 
@@ -106,6 +109,7 @@ def create_order(
     try:
         db.add(order)
         if order.payment_method == 'sumup':
+            logger.info('Creating SumUp checkout for order %s', order.id)
             checkout_data = create_sumup_checkout(order)
             if not checkout_data:
                 raise HTTPException(status_code=500, detail="Unable to create SumUp checkout. Please try again later.")
@@ -120,6 +124,7 @@ def create_order(
         raise
     except Exception as exc:
         db.rollback()
+        logger.exception('Order creation failed for order %s', order.id)
         raise HTTPException(status_code=500, detail="Unable to create order. Please try again later.") from exc
 
     db.refresh(order)

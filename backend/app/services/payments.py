@@ -9,7 +9,7 @@ logger = logging.getLogger(__name__)
 
 
 def _credentials_ready() -> bool:
-    return bool(settings.sumup_secret_key)
+    return bool(settings.sumup_secret_key and settings.sumup_merchant_code)
 
 
 def _sumup_headers() -> dict[str, str]:
@@ -23,6 +23,10 @@ def build_sumup_payload(order: Order) -> dict[str, object]:
     if not order.id:
         logger.error('SumUp payload build failed: order id is missing')
         raise HTTPException(status_code=500, detail='Order ID is required for SumUp checkout')
+
+    if not settings.sumup_merchant_code:
+        logger.error('SumUp payload build failed: merchant code is not configured')
+        raise HTTPException(status_code=500, detail='SumUp merchant code is not configured')
 
     checkout_currency = str(order.currency or 'GBP').upper()
     payload = {
@@ -83,6 +87,7 @@ def create_sumup_checkout(order: Order) -> dict[str, str]:
     try:
         response = httpx.post(checkout_url, json=payload, headers=headers, timeout=20)
         response.raise_for_status()
+        logger.info('SumUp checkout created for order %s: %s', order.id, response.text)
     except httpx.HTTPStatusError as exc:
         logger.error(
             'SumUp checkout creation failed: %s %s %s',
@@ -98,7 +103,11 @@ def create_sumup_checkout(order: Order) -> dict[str, str]:
         logger.error('SumUp request failed: %s', exc)
         raise HTTPException(status_code=500, detail=f"SumUp request failed: {exc}")
 
-    result = response.json()
+    try:
+        result = response.json()
+    except ValueError as exc:
+        logger.error('SumUp checkout response JSON decode failed: %s; body=%s', exc, response.text)
+        raise HTTPException(status_code=500, detail='Invalid SumUp checkout response format') from exc
     return _normalize_sumup_checkout_response(result)
 
 
