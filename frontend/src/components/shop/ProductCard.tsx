@@ -6,27 +6,40 @@ import type { Product } from '@/types'
 import { fadeUp } from '@/lib/animations'
 
 const CATEGORY_COLOURS: Record<string, string> = {
-  wedding:  'var(--cream)',
-  birthday: 'var(--cream)',
+  celebration:  'var(--cream)',
+  wedding: 'var(--cream)',
   cupcakes: 'var(--cream)',
-  desserts: 'var(--cream)',
-  treats:   'var(--cream)',
+  loaf : 'var(--cream)',
+  cookies:   'var(--cream)',
+  desserts: 'var(--cream)',   // was dessert_boxes
+  treats:   'var(--cream)',   // was luxury_treats
+  african: 'var(--cream)',
+  learning: 'var(--cream)',
 }
 
 const CATEGORY_EMOJI: Record<string, string> = {
-  wedding:  '💍',
-  birthday: '🎂',
+  celebration:  '🎁',
+  wedding: '💍',
   cupcakes: '🧁',
+  loaf: '🍞',
+  cookies:   '🍪',
   desserts: '🎁',
   treats:   '✨',
+  african: '🌍',
+  learning: '🎓',
 }
 
 const CATEGORY_LABELS: Record<string, string> = {
+  celebration:  'Celebration Cake',
   wedding:  'Wedding Cake',
   birthday: 'Birthday Cake',
   cupcakes: 'Cupcakes',
+  loaf: 'Loaf Cake',
+  cookies: 'Cookies & Cookie Dippers',
   desserts: 'Dessert Box',
   treats:   'Luxury Treats',
+  african: 'African Treats',
+  learning: 'Learn With Haliberry',
 }
 
 interface Props {
