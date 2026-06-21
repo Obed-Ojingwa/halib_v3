@@ -26,6 +26,7 @@ logger = logging.getLogger("haliberry")
 LOCAL_UPLOAD_DIR = Path("/tmp/haliberry-uploads")
 
 
+
 # ── Lifespan ─────────────────────────────────────────────────────
 @asynccontextmanager
 async def lifespan(app: FastAPI):
