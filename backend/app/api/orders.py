@@ -59,6 +59,8 @@ def _build_order(payload: OrderCreate, product_map: dict[str, Product]) -> Order
         total_amount=0.0,
         status='pending_payment' if payment_method == 'sumup' else 'pending',
     )
+    if not order.id:
+        order.id = str(uuid.uuid4())
 
     total_amount = 0.0
     for item_payload in payload.items:

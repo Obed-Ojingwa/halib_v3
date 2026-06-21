@@ -20,6 +20,10 @@ def _sumup_headers() -> dict[str, str]:
 
 
 def build_sumup_payload(order: Order) -> dict[str, object]:
+    if not order.id:
+        logger.error('SumUp payload build failed: order id is missing')
+        raise HTTPException(status_code=500, detail='Order ID is required for SumUp checkout')
+
     payload = {
         'amount': float(order.total_amount),
         'currency': 'GBP',
