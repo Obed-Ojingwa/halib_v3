@@ -19,25 +19,39 @@ def _sumup_headers() -> dict[str, str]:
     }
 
 
-def create_sumup_checkout(order: Order, success_url: str) -> dict[str, str]:
+def build_sumup_payload(order: Order) -> dict[str, object]:
+    payload = {
+        'amount': float(order.total_amount),
+        'currency': 'GBP',
+        'checkout_reference': str(order.id),
+        'description': f'Order {order.id} — Haliberry Cake',
+        'merchant_code': settings.sumup_merchant_code,
+    }
+    if settings.sumup_pay_to_email:
+        payload['pay_to_email'] = settings.sumup_pay_to_email
+    return payload
+
+
+def _normalize_sumup_checkout_response(data: dict[str, object]) -> dict[str, str]:
+    checkout_id = data.get('id')
+    checkout_url = data.get('hosted_checkout_url') or data.get('checkout_url')
+    if not checkout_id or not checkout_url:
+        logger.error('SumUp checkout response missing required fields: %s', data)
+        raise HTTPException(status_code=500, detail='SumUp returned an invalid checkout response')
+
+    return {
+        'checkout_id': str(checkout_id),
+        'checkout_url': str(checkout_url),
+    }
+
+
+def create_sumup_checkout(order: Order) -> dict[str, str]:
     if not _credentials_ready():
         logger.error('SumUp secret key is not configured')
         raise HTTPException(status_code=500, detail='SumUp credentials are not configured')
 
     checkout_url = f"{settings.sumup_base_url.rstrip('/')}/v0.1/checkouts"
-    description = f'Order {order.id} — Haliberry Cake'
-    payload = {
-        'amount': float(order.total_amount),
-        'currency': 'GBP',
-        'checkout_reference': order.id,
-        'description': description,
-        'redirect_url': success_url,
-        'hosted_checkout': {'enabled': True},
-    }
-    if settings.sumup_merchant_code:
-        payload['merchant_code'] = settings.sumup_merchant_code
-    if settings.sumup_pay_to_email:
-        payload['pay_to_email'] = settings.sumup_pay_to_email
+    payload = build_sumup_payload(order)
 
     headers = _sumup_headers()
     try:
@@ -59,11 +73,7 @@ def create_sumup_checkout(order: Order, success_url: str) -> dict[str, str]:
         raise HTTPException(status_code=500, detail=f"SumUp request failed: {exc}")
 
     result = response.json()
-
-    return {
-        'checkout_url': result.get('hosted_checkout_url') or result.get('checkout_url'),
-        'checkout_id': result.get('id'),
-    }
+    return _normalize_sumup_checkout_response(result)
 
 
 def retrieve_sumup_checkout(checkout_id: str) -> Optional[dict[str, object]]:

@@ -64,6 +64,5 @@ class OrderPaymentVerifyRequest(BaseModel):
 
 class OrderCheckoutResponse(BaseModel):
     order_id: str
-    payment_url: Optional[str] = None
-    message: str
-    order: OrderResponse
+    checkout_id: Optional[str] = None
+    checkout_url: Optional[str] = None

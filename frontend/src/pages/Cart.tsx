@@ -41,8 +41,8 @@ export default function CartPage() {
       return response.data
     },
     onSuccess(data) {
-      if (data.payment_url) {
-        window.location.href = data.payment_url
+      if (data.checkout_url) {
+        window.location.href = data.checkout_url
         return
       }
       clearCart()

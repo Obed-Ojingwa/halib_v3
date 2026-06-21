@@ -72,18 +72,19 @@ def create_order(
 
     order.total_amount = round(total_amount, 2)
 
-    payment_url = None
+    checkout_id = None
+    checkout_url = None
     if order.payment_method == 'sumup':
-        success_url = f"{settings.frontend_url.rstrip('/')}/payment-success?order_id={order.id}&sumup=1"
         try:
-            checkout_data = create_sumup_checkout(order, success_url)
+            checkout_data = create_sumup_checkout(order)
         except HTTPException:
             raise
         if not checkout_data:
             raise HTTPException(status_code=500, detail="Unable to create SumUp checkout. Please try again later.")
         order.sumup_checkout_url = checkout_data.get('checkout_url')
         order.sumup_checkout_id = checkout_data.get('checkout_id')
-        payment_url = order.sumup_checkout_url
+        checkout_id = checkout_data.get('checkout_id')
+        checkout_url = checkout_data.get('checkout_url')
 
     db.add(order)
     db.commit()
@@ -109,9 +110,8 @@ def create_order(
 
     return OrderCheckoutResponse(
         order_id=order.id,
-        payment_url=payment_url,
-        message="Order created successfully.",
-        order=order,
+        checkout_id=checkout_id,
+        checkout_url=checkout_url,
     )
 
 
