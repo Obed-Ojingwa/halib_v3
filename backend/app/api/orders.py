@@ -1,3 +1,4 @@
+import uuid
 from datetime import datetime, timezone
 from decimal import Decimal, InvalidOperation
 from fastapi import APIRouter, Depends, HTTPException, Response, status
@@ -27,29 +28,33 @@ def _get_brand_logo_url(db: Session) -> Optional[str]:
     return setting.image_url if setting else None
 
 
-@router.post("", response_model=OrderCheckoutResponse, status_code=status.HTTP_201_CREATED)
-def create_order(
-    payload: OrderCreate,
-    db: Session = Depends(get_db),
-):
+ALLOWED_CURRENCIES = {'GBP'}
+ALLOWED_DELIVERY_TYPES = {'delivery', 'pickup'}
+
+
+def _validate_order_payload(payload: OrderCreate) -> None:
     if not payload.items:
         raise HTTPException(status_code=400, detail="Order must include at least one item")
 
-    product_ids = [item.product_id for item in payload.items]
-    products = db.query(Product).filter(Product.id.in_(product_ids)).all()
-    product_map = {product.id: product for product in products}
+    currency = payload.currency.strip().upper() if payload.currency else 'GBP'
+    if currency not in ALLOWED_CURRENCIES:
+        raise HTTPException(status_code=400, detail="Unsupported currency. Only GBP is accepted.")
 
-    if len(product_map) != len(product_ids):
-        missing = set(product_ids) - set(product_map.keys())
-        raise HTTPException(status_code=400, detail=f"Invalid product id(s): {', '.join(missing)}")
+    delivery_type = payload.delivery_type.strip().lower() if payload.delivery_type else 'delivery'
+    if delivery_type not in ALLOWED_DELIVERY_TYPES:
+        raise HTTPException(status_code=400, detail="delivery_type must be 'delivery' or 'pickup'.")
 
+
+def _build_order(payload: OrderCreate, product_map: dict[str, Product]) -> Order:
     payment_method = payload.payment_method or 'sumup'
     order = Order(
-        customer_name=payload.customer_name,
-        email=payload.email,
-        phone=payload.phone,
+        customer_name=payload.customer_name.strip(),
+        email=payload.email.strip(),
+        phone=payload.phone.strip(),
         delivery_date=payload.delivery_date,
-        notes=payload.notes,
+        delivery_type=payload.delivery_type,
+        currency=payload.currency.strip().upper(),
+        notes=payload.notes.strip() if payload.notes else None,
         payment_method=payment_method,
         total_amount=0.0,
         status='pending_payment' if payment_method == 'sumup' else 'pending',
@@ -71,23 +76,42 @@ def create_order(
         order.items.append(order_item)
 
     order.total_amount = round(total_amount, 2)
+    if order.total_amount <= 0:
+        raise HTTPException(status_code=400, detail="Order total must be greater than £0.00")
+
+    return order
+
+
+@router.post("", response_model=OrderCheckoutResponse, status_code=status.HTTP_201_CREATED)
+def create_order(
+    payload: OrderCreate,
+    db: Session = Depends(get_db),
+):
+    _validate_order_payload(payload)
+
+    product_ids = [item.product_id for item in payload.items]
+    products = db.query(Product).filter(Product.id.in_(product_ids)).all()
+    product_map = {product.id: product for product in products}
+
+    if len(product_map) != len(product_ids):
+        missing = set(product_ids) - set(product_map.keys())
+        raise HTTPException(status_code=400, detail=f"Invalid product id(s): {', '.join(missing)}")
+
+    order = _build_order(payload, product_map)
 
     checkout_id = None
     checkout_url = None
-    if order.payment_method == 'sumup':
-        try:
+    with db.begin():
+        db.add(order)
+        if order.payment_method == 'sumup':
             checkout_data = create_sumup_checkout(order)
-        except HTTPException:
-            raise
-        if not checkout_data:
-            raise HTTPException(status_code=500, detail="Unable to create SumUp checkout. Please try again later.")
-        order.sumup_checkout_url = checkout_data.get('checkout_url')
-        order.sumup_checkout_id = checkout_data.get('checkout_id')
-        checkout_id = checkout_data.get('checkout_id')
-        checkout_url = checkout_data.get('checkout_url')
+            if not checkout_data:
+                raise HTTPException(status_code=500, detail="Unable to create SumUp checkout. Please try again later.")
+            order.checkout_id = checkout_data.get('checkout_id')
+            order.checkout_url = checkout_data.get('checkout_url')
+            checkout_id = order.checkout_id
+            checkout_url = order.checkout_url
 
-    db.add(order)
-    db.commit()
     db.refresh(order)
 
     if order.payment_method == 'offline':

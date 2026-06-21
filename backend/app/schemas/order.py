@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, date
 from typing import Optional, Literal
 from pydantic import BaseModel, Field, EmailStr
 
@@ -12,8 +12,10 @@ class OrderItemCreate(BaseModel):
 class OrderCreate(BaseModel):
     customer_name: str = Field(..., min_length=2)
     email: EmailStr
-    phone: Optional[str] = None
-    delivery_date: Optional[str] = None
+    phone: str = Field(..., min_length=7)
+    delivery_date: date
+    delivery_type: Literal['delivery', 'pickup'] = 'delivery'
+    currency: str = 'GBP'
     notes: Optional[str] = None
     payment_method: Optional[Literal['sumup', 'offline']] = 'sumup'
     items: list[OrderItemCreate]
@@ -37,11 +39,15 @@ class OrderResponse(BaseModel):
     customer_name: str
     email: EmailStr
     phone: Optional[str] = None
-    delivery_date: Optional[str] = None
+    delivery_date: date
     notes: Optional[str] = None
     total_amount: float
+    currency: str
+    delivery_type: str
     status: str
     payment_method: str
+    checkout_id: Optional[str] = None
+    checkout_url: Optional[str] = None
     sumup_checkout_id: Optional[str] = None
     sumup_transaction_id: Optional[str] = None
     sumup_checkout_url: Optional[str] = None

@@ -12,8 +12,8 @@ import { fadeUp } from '@/lib/animations'
 const schema = z.object({
   customer_name: z.string().min(2, 'Please enter your name'),
   email: z.string().email('Please enter a valid email'),
-  phone: z.string().optional(),
-  delivery_date: z.string().optional(),
+  phone: z.string().min(7, 'Please enter a valid phone number'),
+  delivery_date: z.string().min(1, 'Please select a delivery date'),
   notes: z.string().optional(),
 })
 
@@ -32,6 +32,8 @@ export default function CartPage() {
       const response = await ordersApi.create({
         ...payload,
         payment_method: 'sumup',
+        delivery_type: 'delivery',
+        currency: 'GBP',
         items: items.map(item => ({
           product_id: item.product_id,
           quantity: item.quantity,
