@@ -73,6 +73,37 @@ export const galleryApi = {
   delete: (id: string)                                 => api.delete(`/api/v1/gallery/${id}`),
 }
 
+
+export const featuredItemsApi = {
+  list: (activeOnly = true) =>
+    api.get('/api/v1/featured-items', { params: { active_only: activeOnly } }),
+ 
+  create: (data: {
+    title: string
+    category_slug: string
+    link_override?: string
+    group?: string
+    sort_order?: number
+    is_active?: boolean
+    is_showcase?: boolean
+    caption?: string
+  }) => api.post('/api/v1/featured-items', data),
+ 
+  update: (id: string, data: Record<string, unknown>) =>
+    api.patch(`/api/v1/featured-items/${id}`, data),
+ 
+  delete: (id: string) => api.delete(`/api/v1/featured-items/${id}`),
+ 
+  uploadImage: (id: string, file: File) => {
+    const fd = new FormData()
+    fd.append('file', file)
+    return api.post(`/api/v1/featured-items/${id}/image`, fd, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    })
+  },
+}
+
+
 // ─── Inquiries ───────────────────────────────────────────────────
 export const inquiryApi = {
   submit:   (data: unknown)    => api.post('/api/v1/inquiries', data),

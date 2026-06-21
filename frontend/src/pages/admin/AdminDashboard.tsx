@@ -7,15 +7,16 @@ import {
   LayoutDashboard, Package, GalleryHorizontal, Star,
   MessageCircle, BookOpen, Heart, LogOut, Menu, X, Eye, Mail,
   Plus, Pencil, Trash2, CheckCircle, XCircle, Calendar, Clock, Users,
-  ImageIcon, ShoppingBag,
+  ImageIcon, ShoppingBag, Sparkles,
 } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 import { api, classesApi, testimonialsApi } from '@/lib/api'
 import AdminProducts    from '@/components/admin/AdminProducts'
 import AdminGallery     from '@/components/admin/AdminGallery'
 import AdminInquiries   from '@/components/admin/AdminInquiries'
-import AdminSiteImages  from '@/components/admin/AdminSiteImages'
-import AdminOrders      from '@/components/admin/AdminOrders'
+import AdminSiteImages       from '@/components/admin/AdminSiteImages'
+import FeaturedItemsManager  from '@/components/admin/FeaturedItemsManager'
+import AdminOrders           from '@/components/admin/AdminOrders'
 import AdminOrderDetail from '@/components/admin/AdminOrderDetail'
 import {
   AdminPageHeader, AdminDrawer, ConfirmDialog,
@@ -25,15 +26,16 @@ import type { CakeClass, Testimonial } from '@/types'
 
 // ── Sidebar nav ───────────────────────────────────────────────────
 const NAV = [
-  { label: 'Overview',     href: '/admin',              icon: <LayoutDashboard size={18}/> },
-  { label: 'Products',     href: '/admin/products',     icon: <Package size={18}/> },
-  { label: 'Classes',      href: '/admin/classes',      icon: <BookOpen size={18}/> },
-  { label: 'Gallery',      href: '/admin/gallery',      icon: <GalleryHorizontal size={18}/> },
-  { label: 'Site Images',  href: '/admin/site-images',  icon: <ImageIcon size={18}/> },
-  { label: 'Testimonials', href: '/admin/reviews',      icon: <Star size={18}/> },
-  { label: 'Orders',       href: '/admin/orders',       icon: <ShoppingBag size={18}/> },
-  { label: 'Inquiries',    href: '/admin/inquiries',    icon: <MessageCircle size={18}/> },
-  { label: 'CIC',          href: '/admin/cic',          icon: <Heart size={18}/> },
+  { label: 'Overview',        href: '/admin',                  icon: <LayoutDashboard size={18}/> },
+  { label: 'Products',        href: '/admin/products',         icon: <Package size={18}/> },
+  { label: 'Classes',         href: '/admin/classes',          icon: <BookOpen size={18}/> },
+  { label: 'Gallery',         href: '/admin/gallery',          icon: <GalleryHorizontal size={18}/> },
+  { label: 'Site Images',     href: '/admin/site-images',      icon: <ImageIcon size={18}/> },
+  { label: 'Featured Items',  href: '/admin/featured-items',   icon: <Sparkles size={18}/> },
+  { label: 'Testimonials',    href: '/admin/reviews',          icon: <Star size={18}/> },
+  { label: 'Orders',          href: '/admin/orders',           icon: <ShoppingBag size={18}/> },
+  { label: 'Inquiries',       href: '/admin/inquiries',        icon: <MessageCircle size={18}/> },
+  { label: 'CIC',             href: '/admin/cic',              icon: <Heart size={18}/> },
 ]
 
 // ── Stat card ─────────────────────────────────────────────────────
@@ -489,8 +491,9 @@ export default function AdminDashboard() {
             <Route path="products"    element={<AdminProducts />} />
             <Route path="classes"     element={<AdminClasses />} />
             <Route path="gallery"     element={<AdminGallery />} />
-            <Route path="site-images" element={<AdminSiteImages />} />
-            <Route path="orders"      element={<AdminOrders />} />
+            <Route path="site-images"     element={<AdminSiteImages />} />
+            <Route path="featured-items"  element={<FeaturedItemsManager />} />
+            <Route path="orders"          element={<AdminOrders />} />
             <Route path="orders/:orderId" element={<AdminOrderDetail />} />
             <Route path="reviews"     element={<AdminTestimonials />} />
             <Route path="inquiries"   element={<AdminInquiries />} />

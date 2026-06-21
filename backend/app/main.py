@@ -3,6 +3,7 @@ import logging
 from pathlib import Path
 from contextlib import asynccontextmanager
 
+from backend.app.api import featured_items
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
@@ -92,6 +93,7 @@ app.include_router(inquiries.router,    prefix=API_PREFIX)
 app.include_router(cic.router,          prefix=API_PREFIX)
 app.include_router(site_settings.router, prefix=API_PREFIX)
 app.include_router(orders.router,       prefix=API_PREFIX)
+app.include_router(featured_items.router, prefix=API_PREFIX)
 
 
 # ── Health check ─────────────────────────────────────────────────
