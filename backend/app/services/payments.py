@@ -29,13 +29,15 @@ def build_sumup_payload(order: Order) -> dict[str, object]:
         'amount': float(order.total_amount),
         'currency': checkout_currency,
         'checkout_reference': str(order.id),
-        'description': f'Order {order.id} — Haliberry Cake',
+        'description': order.notes or f'Order {order.id} — Haliberry Cake',
         'merchant_code': settings.sumup_merchant_code,
+        'purpose': 'CHECKOUT',
         'hosted_checkout': {'enabled': True},
     }
 
     if settings.frontend_url:
-        payload['redirect_url'] = f"{settings.frontend_url.rstrip('/')}/order-success?order_id={order.id}&sumup=true"
+        payload['return_url'] = f"{settings.frontend_url.rstrip('/')}/order-success?order_id={order.id}&sumup=true"
+        payload['redirect_url'] = payload['return_url']
     if settings.sumup_pay_to_email:
         payload['pay_to_email'] = settings.sumup_pay_to_email
     return payload
@@ -50,9 +52,18 @@ def _normalize_sumup_checkout_response(data: dict[str, object]) -> dict[str, str
         or (data.get('hosted_checkout') or {}).get('hosted_checkout_url')
     )
 
-    if not checkout_id or not checkout_url:
-        logger.error('SumUp checkout response missing required fields: %s', data)
+    if not checkout_id:
+        logger.error('SumUp checkout response missing id: %s', data)
         raise HTTPException(status_code=500, detail='SumUp returned an invalid checkout response')
+
+    if not checkout_url:
+        checkout_url = f"https://checkout.sumup.com/pay/{checkout_id}"
+        logger.warning('SumUp checkout response missing url, using fallback hosted URL: %s', checkout_url)
+
+    return {
+        'checkout_id': str(checkout_id),
+        'checkout_url': str(checkout_url),
+    }
 
     return {
         'checkout_id': str(checkout_id),
