@@ -145,6 +145,9 @@ export default function CIC() {
               <motion.p variants={fadeUp} className="font-sans font-light leading-relaxed" style={{ color:'var(--text-primary)', fontSize:'1.05rem', marginBottom:'1rem' }}>
                 Through practical training and community programmes, we help women develop valuable skills, confidence and pathways towards independence.
               </motion.p>
+              <motion.h3 variants={fadeUp} className="font-serif font-semibold text-left" style={{ fontSize:'1.75rem', marginTop:'2.5rem', color:'var(--text-primary)' }}>
+                Our programmes include:
+              </motion.h3>
               <motion.ol variants={fadeUp} className="list-none pl-0 space-y-3 font-sans font-light" style={{ color:'var(--text-primary)', fontSize:'1.05rem' }}>
                 <motion.li key="1" variants={fadeUp} className="flex items-start space-x-3">
                   <motion.span variants={fadeUp} className="flex-shrink-0 mt-1">
