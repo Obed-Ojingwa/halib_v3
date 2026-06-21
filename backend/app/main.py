@@ -3,7 +3,7 @@ import logging
 from pathlib import Path
 from contextlib import asynccontextmanager
 
-from backend.app.api import featured_items
+from app.api import featured_items
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
