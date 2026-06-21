@@ -1,6 +1,6 @@
 from datetime import datetime, date
 from typing import Optional, Literal
-from pydantic import BaseModel, Field, EmailStr
+from pydantic import BaseModel, Field, EmailStr, field_validator
 
 
 class OrderItemCreate(BaseModel):
@@ -19,6 +19,12 @@ class OrderCreate(BaseModel):
     notes: Optional[str] = None
     payment_method: Optional[Literal['sumup', 'offline']] = 'sumup'
     items: list[OrderItemCreate]
+
+    @field_validator('delivery_date', mode='before')
+    def parse_delivery_date(cls, value):
+        if isinstance(value, str):
+            return value.strip()
+        return value
 
 
 class OrderItemResponse(BaseModel):
