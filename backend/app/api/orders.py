@@ -101,7 +101,7 @@ def create_order(
 
     checkout_id = None
     checkout_url = None
-    with db.begin():
+    try:
         db.add(order)
         if order.payment_method == 'sumup':
             checkout_data = create_sumup_checkout(order)
@@ -111,6 +111,14 @@ def create_order(
             order.checkout_url = checkout_data.get('checkout_url')
             checkout_id = order.checkout_id
             checkout_url = order.checkout_url
+
+        db.commit()
+    except HTTPException:
+        db.rollback()
+        raise
+    except Exception as exc:
+        db.rollback()
+        raise HTTPException(status_code=500, detail="Unable to create order. Please try again later.") from exc
 
     db.refresh(order)
 
