@@ -8,16 +8,16 @@ import { heroTextReveal, imageFloat } from '@/lib/animations';
 export default function HeroSection() {
   const featuredCakes = [
     { image: 'cake.avif', title: ' 🎂 Celebration Cakes' },
-    { image: 'cake.webp', title: '💍 Wedding Cakes' },
-    { image: 'cakes.jpg', title: '🧁 Cupcakes' },
-    { image: 'cakess.jpg', title: '🍞 Loaf Cakes' },
-    { image: 'cakess.jpg', title: '🍪 Cookies & Cookie Dippers' },
+    { image: 'cakess.jpg', title: '💍 Wedding Cakes' },
+    { image: 'cup.jpg', title: '🧁 Cupcakes' },
+    { image: 'loaf.jpg', title: '🍞 Loaf Cakes' },
+    { image: 'cookie.jpg', title: '🍪 Cookies & Cookie Dippers' },
   ];
 
   const featuredCakes1 = [
-    { image: 'cakeee.jpeg', title: '🍰 Dessert Boxes' },
-    { image: 'cakeeeeee.jpeg', title: '🍩 Sweet Treats' },
-    { image: 'cakeeee.jpeg', title: '😊 African Treats Collection' },
+    { image: 'dessert.webp', title: '🍰 Dessert Boxes' },
+    { image: 'treats.webp', title: '🍩 Sweet Treats' },
+    { image: 'africa.webp', title: '😊 African Treats Collection' },
     { image: 'cakee.jpeg', title: '🎓 Learn With Haliberry' },
   ];
 
