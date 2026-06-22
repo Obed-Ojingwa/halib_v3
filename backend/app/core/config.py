@@ -52,7 +52,7 @@ class Settings(BaseSettings):
             "https://haliberry-v1.vercel.app/",
             "https://haliberry-v3.vercel.app",
             "https://haliberry-v3.vercel.app",
-            "https://www.haliberry.co.uk/",
+            "https://www.haliberry.co.uk",
             self.frontend_url.rstrip("/"),
             self.production_url.rstrip("/"),
         }
