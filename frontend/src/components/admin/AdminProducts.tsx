@@ -6,6 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { Plus, Pencil, Trash2, Star, StarOff, ImagePlus, Search } from 'lucide-react'
 import { productsApi } from '@/lib/api'
+import { CATEGORY_MAP } from '@/lib/categories'
 import {
   AdminPageHeader, AdminDrawer, ConfirmDialog,
   EmptyState, Badge, inputCls, labelCls, selectCls,
@@ -13,17 +14,28 @@ import {
 import type { Product } from '@/types'
 
 /* ── Form schema ─────────────────────────────────────────────── */
+const CATEGORY_SLUGS = [
+  'celebration cakes',
+  'wedding cakes',
+  'birthday cakes',
+  'cupcakes',
+  'loaf cakes',
+  'cookies & cookie dippers',
+  'dessert boxes',
+  'sweet treats',
+  'african treats collection',
+  'learn with haliberry',
+] as const
+
 const schema = z.object({
   name:        z.string().min(2),
   description: z.string().optional(),
-  category:    z.enum(['wedding', 'birthday', 'cupcakes', 'desserts', 'treats', 'celebration','african','loaf cakes', 'cookies and cookie dippers','learn haliberry']),
+  category:    z.enum(CATEGORY_SLUGS),
   price:       z.coerce.number().min(1, 'Price must be > 0'),
   featured:    z.boolean().optional(),
   in_stock:    z.boolean().optional(),
 })
 type FormValues = z.infer<typeof schema>
-
-const CATEGORIES = ['wedding', 'birthday', 'cupcakes', 'desserts', 'treats'] as const
 
 /* ── Product Form inside drawer ──────────────────────────────── */
 function ProductForm({
@@ -76,8 +88,8 @@ function ProductForm({
         <div>
           <label className={labelCls}>Category *</label>
           <select {...register('category')} className={selectCls}>
-            {CATEGORIES.map(c => (
-              <option key={c} value={c}>{c.charAt(0).toUpperCase() + c.slice(1)}</option>
+            {CATEGORY_SLUGS.map(slug => (
+              <option key={slug} value={slug}>{CATEGORY_MAP[slug]?.label ?? slug}</option>
             ))}
           </select>
           {errors.category && <p className="text-red-500 text-xs mt-1">{errors.category.message}</p>}
@@ -210,7 +222,7 @@ export default function AdminProducts() {
         </div>
         {/* Category pills */}
         <div className="flex flex-wrap gap-2">
-          {['all', ...CATEGORIES].map(c => (
+          {['all', ...CATEGORY_SLUGS].map(c => (
             <button
               key={c} onClick={() => setCatFilter(c)}
               className="px-3.5 py-2 rounded-full font-sans text-xs font-medium capitalize transition-all"
@@ -220,7 +232,7 @@ export default function AdminProducts() {
                 border:     `1.5px solid ${c === catFilter ? 'var(--peach)' : '#E0D0C5'}`,
               }}
             >
-              {c}
+              {c === 'all' ? 'All' : CATEGORY_MAP[c]?.label ?? c}
             </button>
           ))}
         </div>
