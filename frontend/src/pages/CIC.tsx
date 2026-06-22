@@ -9,6 +9,8 @@ import type { CICProgram } from '@/types'
 import CTABanner from '@/components/home/CTABanner'
 import WhatsAppFloatButton from '@/components/ui/WhatsAppFloatButton'
 
+const sumupDonationUrl = import.meta.env.VITE_SUMUP_DONATION_URL ?? '/shop' 
+
 const IMPACT = [
   { icon:<Users size={22}/>,   value:'200+', label:'Women Supported', description:'Through our baking and empowerment programmes' },
   { icon:<BookOpen size={22}/>,value:'50+',  label:'Classes Delivered', description:'Free baking classes for women in need' },
@@ -41,7 +43,7 @@ export default function CIC() {
               Haliberry CIC is a women-led social enterprise based in London, dedicated to helping women rebuild confidence, develop practical skills and create new opportunities for themselves.
             </motion.p>
             <motion.div variants={fadeUp} className="flex flex-wrap gap-3 justify-center">
-              <a href="#programmes" className="btn-primary"><Heart size={16}/> Support Our Mission</a>
+              <a href={sumupDonationUrl} target="_blank" rel="noreferrer noopener" className="btn-primary"><Heart size={16}/> Support Our Mission</a>
               <Link to="/contact" className="btn-ghost">Get Involved</Link>
             </motion.div>
           </motion.div>
@@ -226,7 +228,7 @@ export default function CIC() {
             {/* Call to action */}
             <motion.div variants={fadeUp} className="flex flex-wrap gap-4 justify-center mt-10">
               <Link to="/contact" className="btn-ghost px-8 py-3">Get Involved</Link>
-              <a href="#programmes" className="btn-primary px-8 py-3 flex items-center gap-2">
+              <a href={sumupDonationUrl} target="_blank" rel="noreferrer noopener" className="btn-primary px-8 py-3 flex items-center gap-2">
                 <Heart size={16} className="mb-0.5"/> Support Our Mission
               </a>
             </motion.div>
