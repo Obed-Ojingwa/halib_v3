@@ -7,7 +7,10 @@ from typing import Optional
 class ProductBase(BaseModel):
     name: str = Field(..., min_length=2, max_length=200)
     description: Optional[str] = None
-    category: str = Field(..., pattern="^(wedding|birthday|cupcakes|desserts|treats)$")
+    category: str = Field(
+        ...,
+        pattern=r'^(wedding cakes|celebration cakes|celebration|cupcakes|loaf cakes|cookies & cookie dippers|cookies and cookie dippers|dessert boxes|sweet treats|african treats collection|learn with haliberry|learn haliberry|desserts|treats)$',
+    )
     image_url: Optional[str] = None
     price: float = Field(..., gt=0)
     featured: bool = False
