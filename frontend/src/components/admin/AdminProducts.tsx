@@ -16,7 +16,7 @@ import type { Product } from '@/types'
 const schema = z.object({
   name:        z.string().min(2),
   description: z.string().optional(),
-  category:    z.enum(['wedding', 'birthday', 'cupcakes', 'desserts', 'treats']),
+  category:    z.enum(['wedding', 'birthday', 'cupcakes', 'desserts', 'treats', 'celebration','african','loaf cakes', 'cookies and cookie dippers','learn haliberry']),
   price:       z.coerce.number().min(1, 'Price must be > 0'),
   featured:    z.boolean().optional(),
   in_stock:    z.boolean().optional(),
