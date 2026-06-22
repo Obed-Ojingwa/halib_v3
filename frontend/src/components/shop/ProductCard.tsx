@@ -155,7 +155,7 @@ export default function ProductCard({ product, onInquire }: Props) {
               className="font-serif font-semibold"
               style={{ fontSize: '1.2rem', color: 'var(--text-primary)' }}
             >
-              {product.price > 0 ? `£${product.price.toFixed(0)}` : 'POA'}
+              {product.price > 0 ? `from £${product.price.toFixed(0)}` : 'POA'}
             </span>
             <Link
               to={`/product/${product.id}`}
