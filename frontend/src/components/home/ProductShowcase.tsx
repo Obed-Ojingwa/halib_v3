@@ -12,7 +12,7 @@ const CATEGORIES = [
     emoji: '🎂',
     from: '#F9F7F4',
     to: '#D4A9A0',
-    href: '/shop#celebration-cakes',
+    href: '/shop?category=celebration%20cakes',
     startingFrom: '£120',
   },
   {
@@ -22,7 +22,7 @@ const CATEGORIES = [
     emoji: '💍',
     from: '#F9F7F4',
     to: '#A89080',
-    href: '/shop#wedding-cakes',
+    href: '/shop?category=wedding%20cakes',
     startingFrom: '£350',
   },
   {
@@ -32,7 +32,7 @@ const CATEGORIES = [
     emoji: '🧁',
     from: '#F0E8E3',
     to: '#D9A9A0',
-    href: '/shop#cupcakes',
+    href: '/shop?category=cupcakes',
     startingFrom: '£3.50',
   },
   {
@@ -42,7 +42,7 @@ const CATEGORIES = [
     emoji: '🍞',
     from: '#F0E8E3',
     to: '#C9A876',
-    href: '/shop#loaf-cakes',
+    href: '/shop?category=loaf%20cakes',
     startingFrom: '£48',
   },
   {
@@ -52,7 +52,7 @@ const CATEGORIES = [
     emoji: '🍪',
     from: '#FAF8F6',
     to: '#B8936D',
-    href: '/shop#cookies-dippers',
+    href: '/shop?category=cookies%20%26%20cookie%20dippers',
     startingFrom: '£25',
   },
   {
@@ -62,7 +62,7 @@ const CATEGORIES = [
     emoji: '🍰',
     from: '#FAF8F6',
     to: '#D4A9A0',
-    href: '/shop#dessert-boxes',
+    href: '/shop?category=dessert%20boxes',
     startingFrom: '£35',
   },
   {
@@ -72,7 +72,7 @@ const CATEGORIES = [
     emoji: '🍩',
     from: '#F9F7F4',
     to: '#3D2817',
-    href: '/shop#sweet-treats',
+    href: '/shop?category=sweet%20treats',
     startingFrom: '£22',
   },
   {
@@ -82,7 +82,7 @@ const CATEGORIES = [
     emoji: '😊',
     from: '#F9F7F4',
     to: '#8B6F47',
-    href: '/shop#african-treats',
+    href: '/shop?category=african%20treats%20collection',
     startingFrom: '£18',
   },
   {
