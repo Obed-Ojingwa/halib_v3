@@ -7,18 +7,18 @@ import { heroTextReveal, imageFloat } from '@/lib/animations';
 
 export default function HeroSection() {
   const featuredCakes = [
-    { image: 'cake.avif', title: ' 🎂 Celebration Cakes' },
-    { image: 'cakess.jpg', title: '💍 Wedding Cakes' },
-    { image: 'cup.jpg', title: '🧁 Cupcakes' },
-    { image: 'loaf.jpg', title: '🍞 Loaf Cakes' },
-    { image: 'cookie.jpg', title: '🍪 Cookies & Cookie Dippers' },
+    { image: 'cake.avif', title: '🎂 Celebration Cakes', category: 'celebration cakes' },
+    { image: 'cakess.jpg', title: '💍 Wedding Cakes', category: 'wedding cakes' },
+    { image: 'cup.jpg', title: '🧁 Cupcakes', category: 'cupcakes' },
+    { image: 'loaf.jpg', title: '🍞 Loaf Cakes', category: 'loaf cakes' },
+    { image: 'cookie.jpg', title: '🍪 Cookies & Cookie Dippers', category: 'cookies & cookie dippers' },
   ];
 
   const featuredCakes1 = [
-    { image: 'dessert.webp', title: '🍰 Dessert Boxes' },
-    { image: 'treats.webp', title: '🍩 Sweet Treats' },
-    { image: 'africa.webp', title: '😊 African Treats Collection' },
-    { image: 'cakee.jpeg', title: '🎓 Learn With Haliberry' },
+    { image: 'dessert.webp', title: '🍰 Dessert Boxes', category: 'dessert boxes' },
+    { image: 'treats.webp', title: '🍩 Sweet Treats', category: 'sweet treats' },
+    { image: 'africa.webp', title: '😊 African Treats Collection', category: 'african treats collection' },
+    { image: 'cakee.jpeg', title: '🎓 Learn With Haliberry', category: 'learn with haliberry' },
   ];
 
   const sliderImages = [
@@ -246,7 +246,7 @@ export default function HeroSection() {
             {allCakes.map((cake, index) => (
               <Link
                 key={index}
-                to="/shop"
+                to={`/shop?category=${encodeURIComponent(cake.category)}`}
                 className="
                   group flex-none flex flex-col items-center gap-2
                   snap-start
@@ -381,7 +381,7 @@ export default function HeroSection() {
             {allCakes.map((cake, index) => (
               <Link
                 key={index}
-                to="/shop"
+                to={`/shop?category=${encodeURIComponent(cake.category)}`}
                 className="group relative flex flex-col items-center"
               >
                 <div className="w-24 h-24 rounded-full overflow-hidden border-4 border-white shadow-xl transition-all duration-500 group-hover:scale-110 group-hover:-translate-y-2">
