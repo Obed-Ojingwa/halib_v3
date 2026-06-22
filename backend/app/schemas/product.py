@@ -9,7 +9,7 @@ class ProductBase(BaseModel):
     description: Optional[str] = None
     category: str = Field(
         ...,
-        pattern=r'^(wedding cakes|celebration cakes|celebration|cupcakes|loaf cakes|cookies & cookie dippers|cookies and cookie dippers|dessert boxes|sweet treats|african treats collection|learn with haliberry|learn haliberry|desserts|treats)$',
+        pattern=r'^(wedding|birthday|wedding cakes|birthday cakes|celebration|celebration cakes|cupcakes|loaf cakes|cookies & cookie dippers|cookies and cookie dippers|dessert boxes|sweet treats|african treats collection|learn with haliberry|learn haliberry|cake class|cake_class|desserts|treats)$',
     )
     image_url: Optional[str] = None
     price: float = Field(..., gt=0)
