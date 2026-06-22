@@ -17,7 +17,7 @@ export default function HeroSection() {
   const featuredCakes1 = [
     { image: 'cakeee.jpeg', title: '🍰 Dessert Boxes' },
     { image: 'cakeeeeee.jpeg', title: '🍩 Sweet Treats' },
-    { image: 'cakeeee.jpeg', title: 'African Treats Collection' },
+    { image: 'cakeeee.jpeg', title: '😊 African Treats Collection' },
     { image: 'cakee.jpeg', title: '🎓 Learn With Haliberry' },
   ];
 
