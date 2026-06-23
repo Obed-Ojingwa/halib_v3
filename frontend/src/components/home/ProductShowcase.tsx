@@ -7,9 +7,9 @@ import { fadeUp, staggerContainer } from '@/lib/animations'
 const CATEGORIES = [
   {
     id: 'celebration-cakes',
-    label: '🎂 Celebration Cakes',
+    label: 'Celebration Cakes',
     description: 'Celebration cakes crafted with personality and panache.',
-    emoji: '🎂',
+    image: '/cake.avif',
     from: '#F9F7F4',
     to: '#D4A9A0',
     href: '/shop?category=celebration%20cakes',
@@ -17,9 +17,9 @@ const CATEGORIES = [
   },
   {
     id: 'wedding-cakes',
-    label: '💍 Wedding Cakes',
+    label: 'Wedding Cakes',
     description: 'Bespoke tiered masterpieces for your most cherished day.',
-    emoji: '💍',
+    image: '/cakes.jpg',
     from: '#F9F7F4',
     to: '#A89080',
     href: '/shop?category=wedding%20cakes',
@@ -27,9 +27,9 @@ const CATEGORIES = [
   },
   {
     id: 'cupcakes',
-    label: '🧁 Cupcakes',
+    label: 'Cupcakes',
     description: 'Beautifully decorated individual cakes perfect for any occasion.',
-    emoji: '🧁',
+    image: '/cup.jpg',
     from: '#F0E8E3',
     to: '#D9A9A0',
     href: '/shop?category=cupcakes',
@@ -37,9 +37,9 @@ const CATEGORIES = [
   },
   {
     id: 'loaf-cakes',
-    label: '🍞 Loaf Cakes',
+    label: 'Loaf Cakes',
     description: 'Classic baked goods with a modern twist.',
-    emoji: '🍞',
+    image: '/loaf.jpg',
     from: '#F0E8E3',
     to: '#C9A876',
     href: '/shop?category=loaf%20cakes',
@@ -47,9 +47,9 @@ const CATEGORIES = [
   },
   {
     id: 'cookies-dippers',
-    label: '🍪 Cookies & Cookie Dippers',
+    label: 'Cookies & Cookie Dippers',
     description: 'Artisan cookies and delightful dipping treats.',
-    emoji: '🍪',
+    image: '/cookie.jpg',
     from: '#FAF8F6',
     to: '#B8936D',
     href: '/shop?category=cookies%20%26%20cookie%20dippers',
@@ -57,9 +57,9 @@ const CATEGORIES = [
   },
   {
     id: 'dessert-boxes',
-    label: '🍰 Dessert Boxes',
+    label: 'Dessert Boxes',
     description: 'Curated boxes of joy — gifting at its finest.',
-    emoji: '🍰',
+    image: '/dessert.webp',
     from: '#FAF8F6',
     to: '#D4A9A0',
     href: '/shop?category=dessert%20boxes',
@@ -67,9 +67,9 @@ const CATEGORIES = [
   },
   {
     id: 'sweet-treats',
-    label: '🍩 Sweet Treats',
+    label: 'Sweet Treats',
     description: 'Handcrafted chocolates, petit fours, and sweet morsels.',
-    emoji: '🍩',
+    image: '/treats.webp',
     from: '#F9F7F4',
     to: '#3D2817',
     href: '/shop?category=sweet%20treats',
@@ -77,9 +77,9 @@ const CATEGORIES = [
   },
   {
     id: 'african-treats',
-    label: '😊 African Treats Collection',
+    label: 'African Treats Collection',
     description: 'A unique blend of traditional and modern flavors celebrating African heritage.',
-    emoji: '😊',
+    image: '/africa.webp',
     from: '#F9F7F4',
     to: '#8B6F47',
     href: '/shop?category=african%20treats%20collection',
@@ -87,9 +87,9 @@ const CATEGORIES = [
   },
   {
     id: 'learn-haliberry',
-    label: '🎓 Learn With Haliberry',
+    label: 'Learn With Haliberry',
     description: 'Master the art of baking with our expert-led cake classes.',
-    emoji: '🎓',
+    image: '/haliberry_founder.jpeg',
     from: '#FAF3E8',
     to: '#D9B896',
     href: '/cake-classes',
@@ -141,16 +141,25 @@ export default function ProductShowcase() {
               <Link to={cat.href} className="block">
                 {/* Card image area */}
                 <div
-                  className="aspect-[4/3] flex flex-col items-center justify-center relative overflow-hidden"
-                  style={{ background: 'white' }}
+                  className="aspect-[4/3] relative overflow-hidden rounded-[1.25rem]"
+                  style={{ background: 'linear-gradient(180deg, rgba(255,255,255,0.24), rgba(255,255,255,0.04))' }}
                 >
-                  <span
-                    className="text-6xl transition-transform duration-500 group-hover:scale-110"
-                    role="img"
-                    aria-label={cat.label}
-                  >
-                    {cat.emoji}
-                  </span>
+                  {cat.image ? (
+                    <img
+                      src={cat.image}
+                      alt={cat.label}
+                      className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+                    />
+                  ) : (
+                    <span
+                      className="absolute inset-0 flex items-center justify-center text-6xl transition-transform duration-500 group-hover:scale-110"
+                      role="img"
+                      aria-label={cat.label}
+                    >
+                      {cat.image}
+                    </span>
+                  )}
+                  <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/30" />
                   {/* Hover overlay */}
                   <div
                     className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300"
