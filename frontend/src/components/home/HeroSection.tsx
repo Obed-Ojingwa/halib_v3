@@ -7,7 +7,7 @@ import { heroTextReveal, imageFloat } from '@/lib/animations';
 
 export default function HeroSection() {
   const featuredCakes = [
-    { image: 'cake.avif', title: '🎂 Celebration Cakes', category: 'celebration cakes' },
+    { image: 'cake.webp', title: '🎂 Celebration Cakes', category: 'celebration cakes' },
     { image: 'cakess.jpg', title: '💍 Wedding Cakes', category: 'wedding cakes' },
     { image: 'cup.jpg', title: '🧁 Cupcakes', category: 'cupcakes' },
     { image: 'loaf.jpg', title: '🍞 Loaf Cakes', category: 'loaf cakes' },
