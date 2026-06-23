@@ -9,7 +9,7 @@ const CATEGORIES = [
     id: 'celebration-cakes',
     label: 'Celebration Cakes',
     description: 'Celebration cakes crafted with personality and panache.',
-    image: '/cake.avif',
+    image: '/cake.webp',
     from: '#F9F7F4',
     to: '#D4A9A0',
     href: '/shop?category=celebration%20cakes',
