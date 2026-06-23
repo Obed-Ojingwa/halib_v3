@@ -89,7 +89,14 @@ def _build_order(payload: OrderCreate, product_map: dict[str, Product]) -> Order
         if product.fulfilment_class == 'digital':
             has_digital = True
         else:
+            # treat postal/hand/physical/other as physical-type for combined-order checks
             has_physical = True
+        # Enforce hand-delivery-only products cannot be checked out with postal method
+        if product.fulfilment_class in {'hand'} and delivery_method == 'postal':
+            raise HTTPException(
+                status_code=400,
+                detail=f"Product '{product.name}' is only available for hand delivery or collection and cannot be posted.",
+            )
 
     if has_digital and has_physical:
         raise HTTPException(

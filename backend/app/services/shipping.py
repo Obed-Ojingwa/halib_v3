@@ -5,10 +5,16 @@ FulfilmentMethod = Literal['postal', 'local', 'collection', 'digital']
 DeliveryZone = Literal['Zone 1', 'Zone 2', 'Zone 3']
 
 ZONE_1_PREFIXES = {
-    'E', 'EC', 'N', 'NW', 'SE', 'SW', 'W', 'WC',
+    'E', 'IG', 'RM',
 }
 ZONE_2_PREFIXES = {
-    'BR', 'CR', 'DA', 'HA', 'IG', 'KT', 'RM', 'SE', 'SM', 'SW', 'TW', 'UB', 'WD',
+    'EC', 'N', 'NW', 'SE', 'SW', 'W', 'WC',
+}
+ZONE_3_PREFIXES = {
+    'BR', 'CR', 'DA', 'EN', 'HA', 'KT', 'SM', 'TW', 'UB', 'WD',
+}
+ZONE_4_PREFIXES = {
+    'AL', 'CM', 'CO', 'GU', 'ME', 'RH', 'SG', 'SL', 'SS', 'TN',
 }
 
 _POSTCODE_RE = re.compile(r'^[A-Z]{1,2}\d[A-Z\d]?\s*\d[A-Z]{2}$', re.IGNORECASE)
@@ -47,6 +53,10 @@ def get_delivery_zone(postcode: str) -> Optional[DeliveryZone]:
         return 'Zone 1'
     if prefix in ZONE_2_PREFIXES:
         return 'Zone 2'
+    if prefix in ZONE_3_PREFIXES:
+        return 'Zone 3'
+    if prefix in ZONE_4_PREFIXES:
+        return 'Zone 4'
 
     return 'Zone 3'
 
@@ -66,23 +76,24 @@ def get_shipping_fee(method: FulfilmentMethod, postcode_or_zone: str | None) -> 
     if method in {'collection', 'digital'}:
         return 0.0
 
+    # Postal is a flat UK-wide fee for eligible postal products
+    if method == 'postal':
+        return 7.95
+
     zone = resolve_zone(postcode_or_zone)
     if not zone:
         return 0.0
 
     if method == 'local':
         if zone == 'Zone 1':
-            return 8.0
+            return 15.0
         if zone == 'Zone 2':
-            return 12.0
+            return 25.0
+        if zone == 'Zone 3':
+            return 45.0
+        if zone == 'Zone 4':
+            return 65.0
         return 0.0
-
-    if method == 'postal':
-        if zone == 'Zone 1':
-            return 9.0
-        if zone == 'Zone 2':
-            return 14.0
-        return 18.0
 
     return 0.0
 

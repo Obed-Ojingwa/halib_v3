@@ -3,12 +3,10 @@
 node_modules/
 dist/
 *.log
-.env
 *.env
 *.bak
 *.tmp
 .idea/
-.vscode/
 backend/backend_config_changes.txt
 *.swp
 *.swo
@@ -26,3 +24,4 @@ backend/test_db.py
 .claude/
 backend/freshadmin.py
 backend/fix_password.py
+config.bat
