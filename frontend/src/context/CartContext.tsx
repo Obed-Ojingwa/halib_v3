@@ -8,7 +8,7 @@ export interface CartItem {
   unit_price: number
   quantity: number
   custom_message?: string
-  fulfilment_class?: 'physical' | 'digital' | 'quote_only'
+  fulfilment_class?: 'postal' | 'hand' | 'digital' | 'quote_only'
 }
 
 interface CartContextValue {
@@ -48,6 +48,29 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   const addToCart = (product: Product, quantity = 1, custom_message?: string) => {
     const product_id = String(product.id)
+    // derive fulfilment class from product metadata or category/name
+    const deriveFulfilment = (p: Product): CartItem['fulfilment_class'] => {
+      if (p.fulfilment_class) return p.fulfilment_class as any
+
+      const name = (p.name || '').toLowerCase()
+      const category = (p.category || '').toLowerCase()
+
+      // Class C: digital products / Learn With Haliberry
+      const classC = ['cake decorating classes', 'beginner baking classes', 'online classes', 'private 1-to-1 training', 'learn with haliberry']
+      if (classC.some(n => name.includes(n) || category.includes('learn'))) return 'digital'
+
+      // Class B: hand delivery / collection only
+      const classBKeywords = ['wedding', 'celebration', 'cupcake', 'dessert box', 'treat box', 'doughnut', 'cinnamon roll', 'puff puff', 'meat pie', 'sausage roll', 'fish roll', 'chicken pie', 'scotch egg', 'samosa', 'spring roll']
+      if (classBKeywords.some(k => name.includes(k) || category.includes(k))) return 'hand'
+
+      // Class A: postal-eligible items (loafs, cookies, brownies, chin chin)
+      const classAKeywords = ['loaf', 'cookie', 'brownie', 'chin chin']
+      if (classAKeywords.some(k => name.includes(k) || category.includes(k))) return 'postal'
+
+      // default to postal (physical)
+      return 'postal'
+    }
+
     setItems((current) => {
       const existing = current.find(item => item.product_id === product_id)
       if (existing) {
@@ -66,7 +89,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
           unit_price: product.price,
           quantity,
           custom_message,
-          fulfilment_class: product.fulfilment_class ?? 'physical',
+          fulfilment_class: deriveFulfilment(product) ?? 'postal',
         },
       ]
     })

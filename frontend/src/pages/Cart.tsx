@@ -78,7 +78,7 @@ export default function CartPage() {
   const hasItems = items.length > 0
   const hasQuoteOnly = items.some(item => item.fulfilment_class === 'quote_only')
   const hasDigital = items.some(item => item.fulfilment_class === 'digital')
-  const hasPhysical = items.some(item => !item.fulfilment_class || item.fulfilment_class === 'physical')
+  const hasPhysical = items.some(item => item.fulfilment_class !== 'digital' && item.fulfilment_class !== 'quote_only')
   const requiresDigitalOnly = hasDigital && !hasPhysical
   const requiresPhysicalOnly = hasPhysical && !hasDigital
 

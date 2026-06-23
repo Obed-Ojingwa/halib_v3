@@ -16,9 +16,9 @@ class ProductBase(BaseModel):
     featured: bool = False
     in_stock: bool = True
     fulfilment_class: str = Field(
-        'physical',
-        pattern=r'^(physical|digital|quote_only)$',
-        description='Physical products can be ordered; digital products are fulfilled electronically; quote-only products require enquiry.',
+        'postal',
+        pattern=r'^(postal|hand|digital|quote_only|physical)$',
+        description='postal, hand (local delivery/collection), digital, or quote_only.',
     )
 
 
@@ -36,7 +36,7 @@ class ProductUpdate(BaseModel):
     in_stock: Optional[bool] = None
     fulfilment_class: Optional[str] = Field(
         None,
-        pattern=r'^(physical|digital|quote_only)$',
+        pattern=r'^(postal|hand|digital|quote_only|physical)$',
     )
 
 

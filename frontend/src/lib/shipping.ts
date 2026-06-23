@@ -4,31 +4,31 @@ export type DeliveryZone = 'Zone 1' | 'Zone 2' | 'Zone 3'
 export const ZONE_OPTIONS = [
   {
     value: 'Zone 1' as DeliveryZone,
-    label: 'Zone 1 — London inner',
-    description: 'E, EC, N, NW, SE, SW, W, WC',
+    label: 'Zone 1 — Local inner',
+    description: 'E, IG, RM',
   },
   {
     value: 'Zone 2' as DeliveryZone,
-    label: 'Zone 2 — Greater London outskirts',
-    description: 'BR, CR, DA, HA, IG, KT, RM, SE, SM, SW, TW, UB, WD',
+    label: 'Zone 2 — Greater London',
+    description: 'EC, N, NW, SE, SW, W, WC',
   },
   {
     value: 'Zone 3' as DeliveryZone,
-    label: 'Zone 3 — Rest of UK',
-    description: 'All other UK postcodes',
+    label: 'Zone 3 — Outer',
+    description: 'BR, CR, DA, EN, HA, KT, SM, TW, UB, WD',
+  },
+  {
+    value: 'Zone 4' as DeliveryZone,
+    label: 'Zone 4 — Extended',
+    description: 'AL, CM, CO, GU, ME, RH, SG, SL, SS, TN',
   },
 ]
 
-const ZONE_1_PREFIXES = [
-  'E', 'EC', 'N', 'NW', 'SE', 'SW', 'W', 'WC',
-]
-const ZONE_2_PREFIXES = [
-  'BR', 'CR', 'DA', 'HA', 'IG', 'KT', 'RM', 'SE', 'SM', 'SW', 'TW', 'UB', 'WD',
-]
-const LOCAL_POSTCODE_PREFIXES = [
-  ...ZONE_1_PREFIXES,
-  ...ZONE_2_PREFIXES,
-]
+const ZONE_1_PREFIXES = [ 'E', 'IG', 'RM' ]
+const ZONE_2_PREFIXES = [ 'EC', 'N', 'NW', 'SE', 'SW', 'W', 'WC' ]
+const ZONE_3_PREFIXES = [ 'BR', 'CR', 'DA', 'EN', 'HA', 'KT', 'SM', 'TW', 'UB', 'WD' ]
+const ZONE_4_PREFIXES = [ 'AL', 'CM', 'CO', 'GU', 'ME', 'RH', 'SG', 'SL', 'SS', 'TN' ]
+const LOCAL_POSTCODE_PREFIXES = [ ...ZONE_1_PREFIXES, ...ZONE_2_PREFIXES, ...ZONE_3_PREFIXES, ...ZONE_4_PREFIXES ]
 
 export interface ShippingQuote {
   method: FulfilmentMethod
@@ -92,21 +92,22 @@ export function getShippingFee(method: FulfilmentMethod, postcodeOrZone?: string
     return 0
   }
 
+  // Postal is a flat UK-wide fee for eligible postal products
+  if (method === 'postal') {
+    return 7.95
+  }
+
   const zone = resolveDeliveryZone(postcodeOrZone)
   if (!zone) {
     return 0
   }
 
   if (method === 'local') {
-    if (zone === 'Zone 1') return 8
-    if (zone === 'Zone 2') return 12
+    if (zone === 'Zone 1') return 15
+    if (zone === 'Zone 2') return 25
+    if (zone === 'Zone 3') return 45
+    if (zone === 'Zone 4') return 65
     return 0
-  }
-
-  if (method === 'postal') {
-    if (zone === 'Zone 1') return 9
-    if (zone === 'Zone 2') return 14
-    return 18
   }
 
   return 0
@@ -147,7 +148,7 @@ export function getShippingQuote(method: FulfilmentMethod, postcodeOrZone?: stri
 
   if (method === 'local' && quote.fee === 0) {
     quote.available = false
-    quote.message = 'Local hand delivery is not available for this zone.'
+    quote.message = 'Unfortunately, hand delivery is not currently available in your area. Please contact Haliberry Cake & Catering for a bespoke quotation.'
     return quote
   }
 
