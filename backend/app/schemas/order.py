@@ -15,6 +15,8 @@ class OrderCreate(BaseModel):
     phone: str = Field(..., min_length=7)
     delivery_date: date
     delivery_type: Literal['delivery', 'pickup'] = 'delivery'
+    delivery_method: Literal['postal', 'local', 'collection', 'digital'] = 'postal'
+    delivery_postcode: Optional[str] = None
     currency: str = 'GBP'
     notes: Optional[str] = None
     payment_method: Optional[Literal['sumup', 'offline']] = 'sumup'
@@ -50,6 +52,10 @@ class OrderResponse(BaseModel):
     total_amount: float
     currency: str
     delivery_type: str
+    delivery_method: str
+    delivery_postcode: Optional[str] = None
+    delivery_zone: Optional[str] = None
+    shipping_fee: float
     status: str
     payment_method: str
     checkout_id: Optional[str] = None

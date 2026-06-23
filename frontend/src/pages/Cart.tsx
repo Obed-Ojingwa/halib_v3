@@ -8,13 +8,26 @@ import { ordersApi } from '@/lib/api'
 import { useCart } from '@/context/CartContext'
 import { motion } from 'framer-motion'
 import { fadeUp } from '@/lib/animations'
+import { getShippingQuote } from '@/lib/shipping'
 
 const schema = z.object({
   customer_name: z.string().min(2, 'Please enter your name'),
   email: z.string().email('Please enter a valid email'),
   phone: z.string().min(7, 'Please enter a valid phone number'),
   delivery_date: z.string().min(1, 'Please select a delivery date'),
+  delivery_method: z.enum(['postal', 'local', 'collection', 'digital']),
+  delivery_postcode: z.string().optional(),
   notes: z.string().optional(),
+}).superRefine((values, ctx) => {
+  if (values.delivery_method === 'postal' || values.delivery_method === 'local') {
+    if (!values.delivery_postcode || !values.delivery_postcode.trim()) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['delivery_postcode'],
+        message: 'Postcode is required for delivery.',
+      })
+    }
+  }
 })
 
 type FormValues = z.infer<typeof schema>
@@ -22,17 +35,26 @@ type FormValues = z.infer<typeof schema>
 export default function CartPage() {
   const navigate = useNavigate()
   const { items, subtotal, updateQuantity, updateMessage, removeFromCart, clearCart } = useCart()
-  const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<FormValues>({
+  const { register, handleSubmit, watch, formState: { errors, isSubmitting } } = useForm<FormValues>({
     resolver: zodResolver(schema),
-    defaultValues: { customer_name: '', email: '', phone: '', delivery_date: '', notes: '' },
+    defaultValues: {
+      customer_name: '',
+      email: '',
+      phone: '',
+      delivery_date: '',
+      delivery_method: 'postal',
+      delivery_postcode: '',
+      notes: '',
+    },
   })
 
   const mutation = useMutation({
     mutationFn: async (payload: FormValues) => {
+      const delivery_type = payload.delivery_method === 'collection' ? 'pickup' : 'delivery'
       const response = await ordersApi.create({
         ...payload,
         payment_method: 'sumup',
-        delivery_type: 'delivery',
+        delivery_type,
         currency: 'GBP',
         items: items.map(item => ({
           product_id: item.product_id,
@@ -53,9 +75,26 @@ export default function CartPage() {
   })
 
   const hasItems = items.length > 0
+  const hasQuoteOnly = items.some(item => item.fulfilment_class === 'quote_only')
+  const hasDigital = items.some(item => item.fulfilment_class === 'digital')
+  const hasPhysical = items.some(item => !item.fulfilment_class || item.fulfilment_class === 'physical')
+  const requiresDigitalOnly = hasDigital && !hasPhysical
+  const requiresPhysicalOnly = hasPhysical && !hasDigital
+
+  const deliveryMethod = watch('delivery_method')
+  const deliveryPostcode = watch('delivery_postcode')
+  const shippingQuote = getShippingQuote(deliveryMethod, deliveryPostcode)
+  const estimatedTotal = subtotal + (shippingQuote.available ? shippingQuote.fee : 0)
+
+  const fulfilmentMismatch = (requiresDigitalOnly && deliveryMethod !== 'digital') || (requiresPhysicalOnly && deliveryMethod === 'digital')
+  const fulfilmentMismatchMessage = requiresDigitalOnly
+    ? 'This cart contains only digital products, so digital fulfilment must be selected.'
+    : requiresPhysicalOnly && deliveryMethod === 'digital'
+      ? 'Digital fulfilment is not valid for physical products. Choose postal, local, or collection.'
+      : ''
 
   function onSubmit(values: FormValues) {
-    if (!hasItems) return
+    if (!hasItems || hasQuoteOnly || (hasDigital && hasPhysical) || fulfilmentMismatch) return
     mutation.mutate(values)
   }
 
@@ -81,9 +120,13 @@ export default function CartPage() {
               <span>Item total</span>
               <span>£{subtotal.toFixed(2)}</span>
             </div>
+            <div className="flex items-center justify-between text-sm mb-2">
+              <span>Shipping estimate</span>
+              <span>{shippingQuote.available ? `£${shippingQuote.fee.toFixed(2)}` : 'TBD'}</span>
+            </div>
             <div className="border-t border-[var(--cream)] pt-3 flex items-center justify-between font-semibold text-base">
               <span>Total</span>
-              <span>£{subtotal.toFixed(2)}</span>
+              <span>£{estimatedTotal.toFixed(2)}</span>
             </div>
           </div>
         </div>
@@ -197,6 +240,54 @@ export default function CartPage() {
                 </div>
 
                 <div>
+                  <label className="block text-xs font-medium text-[var(--text-secondary)] mb-2">Fulfilment method</label>
+                  <div className="grid gap-2 sm:grid-cols-2">
+                    {[
+                      { value: 'postal', label: 'UK postal delivery' },
+                      { value: 'local', label: 'Local hand delivery' },
+                      { value: 'collection', label: 'Collection' },
+                      { value: 'digital', label: 'Digital fulfilment' },
+                    ].map((option) => (
+                      <label key={option.value} className="inline-flex items-center gap-3 rounded-2xl border border-[var(--cream)] bg-[#FDF7F2] px-4 py-3 text-sm cursor-pointer">
+                        <input
+                          {...register('delivery_method')}
+                          type="radio"
+                          value={option.value}
+                          className="h-4 w-4 accent-[var(--peach)]"
+                        />
+                        <span>{option.label}</span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+
+                {(deliveryMethod === 'postal' || deliveryMethod === 'local') && (
+                  <div>
+                    <label className="block text-xs font-medium text-[var(--text-secondary)] mb-2">Postcode</label>
+                    <input
+                      {...register('delivery_postcode')}
+                      className="w-full rounded-2xl border border-[var(--cream)] bg-[#FDF7F2] px-4 py-3 text-sm outline-none"
+                      placeholder="e.g. SW1A 1AA"
+                    />
+                    {errors.delivery_postcode && <p className="text-red-500 text-xs mt-1">{errors.delivery_postcode.message}</p>}
+                  </div>
+                )}
+
+                <div className="rounded-3xl border border-[var(--cream)] bg-[#F9F2EC] p-5 text-sm leading-relaxed">
+                  <p className="font-semibold mb-2">Shipping quote</p>
+                  <p className="text-[var(--text-secondary)] mb-2">
+                    {shippingQuote.message ?? 'Choose a fulfilment method to see the quote.'}
+                  </p>
+                  {shippingQuote.available && shippingQuote.fee !== 0 && (
+                    <p className="font-semibold">£{shippingQuote.fee.toFixed(2)} ({shippingQuote.zone})</p>
+                  )}
+                  {shippingQuote.available && shippingQuote.fee === 0 && (
+                    <p className="font-semibold">No delivery fee.</p>
+                  )}
+                  <p className="text-xs text-[var(--text-secondary)] mt-2">If you need help with custom delivery, contact us before checkout.</p>
+                </div>
+
+                <div>
                   <label className="block text-xs font-medium text-[var(--text-secondary)] mb-2">Additional notes</label>
                   <textarea
                     {...register('notes')}
@@ -206,13 +297,29 @@ export default function CartPage() {
                   />
                 </div>
 
-                {mutation.isError && (
-                  <p className="rounded-2xl bg-[#FEE2E2] px-4 py-3 text-sm text-[#B91C1C]">Something went wrong. Please try again or contact us directly.</p>
+                {hasQuoteOnly && (
+                  <div className="rounded-2xl bg-[#FEF3C7] px-4 py-3 text-sm text-[#92400E]">
+                    One or more items in your cart require a custom quote and cannot be purchased through checkout. Please enquire instead.
+                  </div>
                 )}
-
+                {hasDigital && hasPhysical && (
+                  <div className="rounded-2xl bg-[#FEE2E2] px-4 py-3 text-sm text-[#B91C1C]">
+                    Your cart contains both digital and physical products. Please separate them into two orders so each can use the correct fulfilment method.
+                  </div>
+                )}
+                {fulfilmentMismatch && (
+                  <div className="rounded-2xl bg-[#FEE2E2] px-4 py-3 text-sm text-[#B91C1C]">
+                    {fulfilmentMismatchMessage}
+                  </div>
+                )}
+                {!shippingQuote.available && (
+                  <div className="rounded-2xl bg-[#FEE2E2] px-4 py-3 text-sm text-[#B91C1C]">
+                    {shippingQuote.message}
+                  </div>
+                )}
                 <button
                   type="submit"
-                  disabled={isSubmitting || mutation.isPending}
+                  disabled={isSubmitting || mutation.isPending || !hasItems || hasQuoteOnly || (hasDigital && hasPhysical) || !shippingQuote.available}
                   className="btn-primary w-full justify-center"
                 >
                   {mutation.isPending ? 'Processing…' : 'Proceed to secure checkout'}

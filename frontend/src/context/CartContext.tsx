@@ -8,6 +8,7 @@ export interface CartItem {
   unit_price: number
   quantity: number
   custom_message?: string
+  fulfilment_class?: 'physical' | 'digital' | 'quote_only'
 }
 
 interface CartContextValue {
@@ -65,6 +66,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
           unit_price: product.price,
           quantity,
           custom_message,
+          fulfilment_class: product.fulfilment_class ?? 'physical',
         },
       ]
     })

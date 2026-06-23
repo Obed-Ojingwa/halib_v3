@@ -27,13 +27,16 @@ const CATEGORY_SLUGS = [
   'learn with haliberry',
 ] as const
 
+const FULFILMENT_CLASSES = ['physical', 'digital', 'quote_only'] as const
+
 const schema = z.object({
-  name:        z.string().min(2),
-  description: z.string().optional(),
-  category:    z.enum(CATEGORY_SLUGS),
-  price:       z.coerce.number().min(1, 'Price must be > 0'),
-  featured:    z.boolean().optional(),
-  in_stock:    z.boolean().optional(),
+  name:             z.string().min(2),
+  description:      z.string().optional(),
+  category:         z.enum(CATEGORY_SLUGS),
+  price:            z.coerce.number().min(1, 'Price must be > 0'),
+  fulfilment_class: z.enum(FULFILMENT_CLASSES),
+  featured:         z.boolean().optional(),
+  in_stock:         z.boolean().optional(),
 })
 type FormValues = z.infer<typeof schema>
 
@@ -51,8 +54,16 @@ function ProductForm({
   const { register, handleSubmit, reset, formState: { errors, isSubmitting } } = useForm<FormValues>({
     resolver: zodResolver(schema),
     defaultValues: product
-      ? { name: product.name, description: product.description ?? '', category: product.category as FormValues['category'], price: product.price, featured: product.featured, in_stock: product.in_stock }
-      : { featured: false, in_stock: true },
+      ? {
+          name: product.name,
+          description: product.description ?? '',
+          category: product.category as FormValues['category'],
+          price: product.price,
+          fulfilment_class: product.fulfilment_class ?? 'physical',
+          featured: product.featured,
+          in_stock: product.in_stock,
+        }
+      : { fulfilment_class: 'physical', featured: false, in_stock: true },
   })
 
   const save = useMutation({
@@ -99,6 +110,16 @@ function ProductForm({
           <input {...register('price')} type="number" step="0.01" placeholder="120.00" className={inputCls} />
           {errors.price && <p className="text-red-500 text-xs mt-1">{errors.price.message}</p>}
         </div>
+      </div>
+
+      <div>
+        <label className={labelCls}>Fulfilment class *</label>
+        <select {...register('fulfilment_class')} className={selectCls}>
+          <option value="physical">Physical</option>
+          <option value="digital">Digital</option>
+          <option value="quote_only">Quote only</option>
+        </select>
+        {errors.fulfilment_class && <p className="text-red-500 text-xs mt-1">{errors.fulfilment_class.message}</p>}
       </div>
 
       {/* Toggles */}
@@ -257,7 +278,7 @@ export default function AdminProducts() {
             <table className="w-full">
               <thead>
                 <tr style={{ background: '#FDF7F2', borderBottom: '1px solid var(--cream)' }}>
-                  {['Image','Name','Category','Price','Featured','Stock','Actions'].map(h => (
+                  {['Image','Name','Category','Fulfilment','Price','Featured','Stock','Actions'].map(h => (
                     <th key={h} className="font-sans text-xs font-medium tracking-wider uppercase text-left px-5 py-3.5 text-[var(--text-muted)]">
                       {h}
                     </th>
@@ -288,6 +309,13 @@ export default function AdminProducts() {
                     {/* Category */}
                     <td className="px-5 py-3.5">
                       <Badge label={p.category} />
+                    </td>
+                    {/* Fulfilment */}
+                    <td className="px-5 py-3.5">
+                      <Badge
+                        label={p.fulfilment_class === 'digital' ? 'Digital' : p.fulfilment_class === 'quote_only' ? 'Quote only' : 'Physical'}
+                        colour={p.fulfilment_class === 'quote_only' ? 'red' : p.fulfilment_class === 'digital' ? 'green' : 'grey'}
+                      />
                     </td>
                     {/* Price */}
                     <td className="px-5 py-3.5 font-sans text-sm font-semibold text-[var(--text-primary)]">

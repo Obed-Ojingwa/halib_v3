@@ -20,6 +20,7 @@ from app.core.auth import get_current_admin
 from app.services.payments import create_sumup_checkout, retrieve_sumup_checkout
 from app.services.pdf import create_order_receipt
 from app.services.email import send_order_notification
+from app.services.shipping import get_shipping_fee, validate_shipping
 from app.core.config import settings
 
 logger = logging.getLogger(__name__)
@@ -33,6 +34,7 @@ def _get_brand_logo_url(db: Session) -> Optional[str]:
 
 ALLOWED_CURRENCIES = {'GBP'}
 ALLOWED_DELIVERY_TYPES = {'delivery', 'pickup'}
+ALLOWED_DELIVERY_METHODS = {'postal', 'local', 'collection', 'digital'}
 
 
 def _validate_order_payload(payload: OrderCreate) -> None:
@@ -47,15 +49,69 @@ def _validate_order_payload(payload: OrderCreate) -> None:
     if delivery_type not in ALLOWED_DELIVERY_TYPES:
         raise HTTPException(status_code=400, detail="delivery_type must be 'delivery' or 'pickup'.")
 
+    delivery_method = payload.delivery_method.strip().lower() if payload.delivery_method else 'postal'
+    if delivery_method not in ALLOWED_DELIVERY_METHODS:
+        raise HTTPException(status_code=400, detail="delivery_method must be 'postal', 'local', 'collection', or 'digital'.")
+
+    if delivery_method in {'postal', 'local'} and not payload.delivery_postcode:
+        raise HTTPException(status_code=400, detail="delivery_postcode is required for postal and local delivery.")
+
+    if delivery_method == 'collection' and delivery_type != 'pickup':
+        raise HTTPException(status_code=400, detail="delivery_type must be 'pickup' when delivery_method is 'collection'.")
+
+    if delivery_method in {'postal', 'local'} and delivery_type != 'delivery':
+        raise HTTPException(status_code=400, detail="delivery_type must be 'delivery' when delivery_method is 'postal' or 'local'.")
+
+    if delivery_method == 'digital' and delivery_type == 'pickup':
+        raise HTTPException(status_code=400, detail="delivery_type cannot be 'pickup' for digital fulfilment.")
+
 
 def _build_order(payload: OrderCreate, product_map: dict[str, Product]) -> Order:
     payment_method = payload.payment_method or 'sumup'
+
+    delivery_method = payload.delivery_method.strip().lower() if payload.delivery_method else 'postal'
+    delivery_postcode = payload.delivery_postcode.strip() if payload.delivery_postcode else None
+    shipping_valid, shipping_error, delivery_zone, shipping_fee = validate_shipping(delivery_method, delivery_postcode)
+    if not shipping_valid:
+        raise HTTPException(status_code=400, detail=shipping_error)
+
+    total_amount = 0.0
+    has_physical = False
+    has_digital = False
+
+    for item_payload in payload.items:
+        product = product_map[item_payload.product_id]
+        if product.fulfilment_class == 'quote_only':
+            raise HTTPException(
+                status_code=400,
+                detail=f"Product '{product.name}' requires a quote and cannot be purchased through checkout.",
+            )
+        if product.fulfilment_class == 'digital':
+            has_digital = True
+        else:
+            has_physical = True
+
+    if has_digital and has_physical:
+        raise HTTPException(
+            status_code=400,
+            detail='Digital and physical products cannot be fulfilled together. Please split your order into separate digital and physical purchases.',
+        )
+    if has_digital and not has_physical and delivery_method != 'digital':
+        raise HTTPException(
+            status_code=400,
+            detail='Digital products must use digital fulfilment.',
+        )
+
     order = Order(
         customer_name=payload.customer_name.strip(),
         email=payload.email.strip(),
         phone=payload.phone.strip(),
         delivery_date=payload.delivery_date,
         delivery_type=payload.delivery_type,
+        delivery_method=delivery_method,
+        delivery_postcode=delivery_postcode,
+        delivery_zone=delivery_zone,
+        shipping_fee=round(shipping_fee, 2),
         currency=payload.currency.strip().upper(),
         notes=payload.notes.strip() if payload.notes else None,
         payment_method=payment_method,
@@ -65,7 +121,6 @@ def _build_order(payload: OrderCreate, product_map: dict[str, Product]) -> Order
     if not order.id:
         order.id = str(uuid.uuid4())
 
-    total_amount = 0.0
     for item_payload in payload.items:
         product = product_map[item_payload.product_id]
         item_total = float(product.price) * item_payload.quantity
@@ -80,7 +135,7 @@ def _build_order(payload: OrderCreate, product_map: dict[str, Product]) -> Order
         total_amount += item_total
         order.items.append(order_item)
 
-    order.total_amount = round(total_amount, 2)
+    order.total_amount = round(total_amount + order.shipping_fee, 2)
     if order.total_amount <= 0:
         raise HTTPException(status_code=400, detail="Order total must be greater than £0.00")
 

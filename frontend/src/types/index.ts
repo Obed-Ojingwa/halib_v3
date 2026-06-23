@@ -9,6 +9,7 @@ export interface Product {
   price: number
   featured: boolean
   in_stock: boolean          // ← was missing
+  fulfilment_class?: 'physical' | 'digital' | 'quote_only'
   updated_at: string
   created_at: string
 }

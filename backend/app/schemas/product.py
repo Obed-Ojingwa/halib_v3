@@ -15,6 +15,11 @@ class ProductBase(BaseModel):
     price: float = Field(..., gt=0)
     featured: bool = False
     in_stock: bool = True
+    fulfilment_class: str = Field(
+        'physical',
+        pattern=r'^(physical|digital|quote_only)$',
+        description='Physical products can be ordered; digital products are fulfilled electronically; quote-only products require enquiry.',
+    )
 
 
 class ProductCreate(ProductBase):
@@ -29,6 +34,10 @@ class ProductUpdate(BaseModel):
     price: Optional[float] = Field(None, gt=0)
     featured: Optional[bool] = None
     in_stock: Optional[bool] = None
+    fulfilment_class: Optional[str] = Field(
+        None,
+        pattern=r'^(physical|digital|quote_only)$',
+    )
 
 
 class ProductResponse(ProductBase):

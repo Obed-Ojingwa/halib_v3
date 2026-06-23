@@ -18,6 +18,7 @@ class Product(Base):
     price: Mapped[float] = mapped_column(Numeric(10, 2), nullable=False)
     featured: Mapped[bool] = mapped_column(Boolean, default=False, index=True)
     in_stock: Mapped[bool] = mapped_column(Boolean, default=True)
+    fulfilment_class: Mapped[str] = mapped_column(String(50), nullable=False, default='physical')
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), default=lambda: datetime.now(timezone.utc)
     )
