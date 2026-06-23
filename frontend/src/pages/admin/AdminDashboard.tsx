@@ -73,7 +73,7 @@ function Overview() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="font-serif font-semibold text-[var(--text-primary)]" style={{ fontSize: '2rem' }}>Good day 👋</h1>
+        <h1 className="font-serif font-semibold text-[var(--text-primary)]" style={{ fontSize: '2rem' }}>Good day Haliberry 👋</h1>
         <p className="font-sans text-sm mt-1 text-[var(--text-muted)]">Here's your Haliberry Cake platform at a glance.</p>
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5">
