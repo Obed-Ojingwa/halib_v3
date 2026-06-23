@@ -53,8 +53,8 @@ def _validate_order_payload(payload: OrderCreate) -> None:
     if delivery_method not in ALLOWED_DELIVERY_METHODS:
         raise HTTPException(status_code=400, detail="delivery_method must be 'postal', 'local', 'collection', or 'digital'.")
 
-    if delivery_method in {'postal', 'local'} and not payload.delivery_postcode:
-        raise HTTPException(status_code=400, detail="delivery_postcode is required for postal and local delivery.")
+    if delivery_method in {'postal', 'local'} and not payload.delivery_zone:
+        raise HTTPException(status_code=400, detail="delivery_zone is required for postal and local delivery.")
 
     if delivery_method == 'collection' and delivery_type != 'pickup':
         raise HTTPException(status_code=400, detail="delivery_type must be 'pickup' when delivery_method is 'collection'.")
@@ -70,8 +70,8 @@ def _build_order(payload: OrderCreate, product_map: dict[str, Product]) -> Order
     payment_method = payload.payment_method or 'sumup'
 
     delivery_method = payload.delivery_method.strip().lower() if payload.delivery_method else 'postal'
-    delivery_postcode = payload.delivery_postcode.strip() if payload.delivery_postcode else None
-    shipping_valid, shipping_error, delivery_zone, shipping_fee = validate_shipping(delivery_method, delivery_postcode)
+    delivery_zone = payload.delivery_zone if payload.delivery_zone else None
+    shipping_valid, shipping_error, resolved_zone, shipping_fee = validate_shipping(delivery_method, delivery_zone)
     if not shipping_valid:
         raise HTTPException(status_code=400, detail=shipping_error)
 
@@ -109,8 +109,7 @@ def _build_order(payload: OrderCreate, product_map: dict[str, Product]) -> Order
         delivery_date=payload.delivery_date,
         delivery_type=payload.delivery_type,
         delivery_method=delivery_method,
-        delivery_postcode=delivery_postcode,
-        delivery_zone=delivery_zone,
+        delivery_zone=resolved_zone,
         shipping_fee=round(shipping_fee, 2),
         currency=payload.currency.strip().upper(),
         notes=payload.notes.strip() if payload.notes else None,

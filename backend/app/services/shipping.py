@@ -51,14 +51,22 @@ def get_delivery_zone(postcode: str) -> Optional[DeliveryZone]:
     return 'Zone 3'
 
 
-def get_shipping_fee(method: FulfilmentMethod, postcode: str | None) -> float:
+def resolve_zone(value: str | None) -> Optional[DeliveryZone]:
+    if not value:
+        return None
+
+    normalized = value.strip().title()
+    if normalized in {'Zone 1', 'Zone 2', 'Zone 3'}:
+        return normalized  # type: ignore[return-value]
+
+    return get_delivery_zone(value)
+
+
+def get_shipping_fee(method: FulfilmentMethod, postcode_or_zone: str | None) -> float:
     if method in {'collection', 'digital'}:
         return 0.0
 
-    if not postcode:
-        return 0.0
-
-    zone = get_delivery_zone(postcode)
+    zone = resolve_zone(postcode_or_zone)
     if not zone:
         return 0.0
 
@@ -79,24 +87,20 @@ def get_shipping_fee(method: FulfilmentMethod, postcode: str | None) -> float:
     return 0.0
 
 
-def validate_shipping(method: FulfilmentMethod, postcode: str | None) -> Tuple[bool, Optional[str], Optional[DeliveryZone], float]:
+def validate_shipping(method: FulfilmentMethod, postcode_or_zone: str | None) -> Tuple[bool, Optional[str], Optional[DeliveryZone], float]:
     if method in {'collection', 'digital'}:
         return True, None, None, 0.0
 
-    if not postcode:
-        return False, 'Enter a UK postcode to calculate shipping.', None, 0.0
+    if not postcode_or_zone:
+        return False, 'Enter a delivery zone or postcode to calculate shipping.', None, 0.0
 
-    normalized = normalize_postcode(postcode)
-    if not is_valid_uk_postcode(normalized):
-        return False, 'Enter a valid UK postcode.', None, 0.0
-
-    zone = get_delivery_zone(normalized)
+    zone = resolve_zone(postcode_or_zone)
     if not zone:
-        return False, 'Enter a valid UK postcode.', None, 0.0
+        return False, 'Enter a valid UK postcode or zone (Zone 1, Zone 2, Zone 3).', None, 0.0
 
-    fee = get_shipping_fee(method, normalized)
+    fee = get_shipping_fee(method, zone)
     if method == 'local' and fee == 0.0:
-        return False, 'Local hand delivery is not available for this postcode.', zone, 0.0
+        return False, 'Local hand delivery is not available for this zone.', zone, 0.0
 
     return True, None, zone, fee
 

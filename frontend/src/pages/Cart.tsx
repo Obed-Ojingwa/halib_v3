@@ -1,6 +1,7 @@
 import { Link, useNavigate } from 'react-router-dom'
 import { Helmet } from 'react-helmet-async'
 import { useMutation } from '@tanstack/react-query'
+import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
@@ -8,7 +9,7 @@ import { ordersApi } from '@/lib/api'
 import { useCart } from '@/context/CartContext'
 import { motion } from 'framer-motion'
 import { fadeUp } from '@/lib/animations'
-import { getShippingQuote } from '@/lib/shipping'
+import { getShippingQuote, ZONE_OPTIONS } from '@/lib/shipping'
 
 const schema = z.object({
   customer_name: z.string().min(2, 'Please enter your name'),
@@ -16,15 +17,15 @@ const schema = z.object({
   phone: z.string().min(7, 'Please enter a valid phone number'),
   delivery_date: z.string().min(1, 'Please select a delivery date'),
   delivery_method: z.enum(['postal', 'local', 'collection', 'digital']),
-  delivery_postcode: z.string().optional(),
+  delivery_zone: z.enum(['Zone 1', 'Zone 2', 'Zone 3']).optional(),
   notes: z.string().optional(),
 }).superRefine((values, ctx) => {
   if (values.delivery_method === 'postal' || values.delivery_method === 'local') {
-    if (!values.delivery_postcode || !values.delivery_postcode.trim()) {
+    if (!values.delivery_zone) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
-        path: ['delivery_postcode'],
-        message: 'Postcode is required for delivery.',
+        path: ['delivery_zone'],
+        message: 'Select a delivery zone for shipping.',
       })
     }
   }
@@ -35,7 +36,7 @@ type FormValues = z.infer<typeof schema>
 export default function CartPage() {
   const navigate = useNavigate()
   const { items, subtotal, updateQuantity, updateMessage, removeFromCart, clearCart } = useCart()
-  const { register, handleSubmit, watch, formState: { errors, isSubmitting } } = useForm<FormValues>({
+  const { register, handleSubmit, setValue, watch, formState: { errors, isSubmitting } } = useForm<FormValues>({
     resolver: zodResolver(schema),
     defaultValues: {
       customer_name: '',
@@ -43,7 +44,7 @@ export default function CartPage() {
       phone: '',
       delivery_date: '',
       delivery_method: 'postal',
-      delivery_postcode: '',
+      delivery_zone: undefined,
       notes: '',
     },
   })
@@ -82,8 +83,8 @@ export default function CartPage() {
   const requiresPhysicalOnly = hasPhysical && !hasDigital
 
   const deliveryMethod = watch('delivery_method')
-  const deliveryPostcode = watch('delivery_postcode')
-  const shippingQuote = getShippingQuote(deliveryMethod, deliveryPostcode)
+  const deliveryZone = watch('delivery_zone')
+  const shippingQuote = getShippingQuote(deliveryMethod, deliveryZone)
   const estimatedTotal = subtotal + (shippingQuote.available ? shippingQuote.fee : 0)
 
   const fulfilmentMismatch = (requiresDigitalOnly && deliveryMethod !== 'digital') || (requiresPhysicalOnly && deliveryMethod === 'digital')
@@ -92,6 +93,13 @@ export default function CartPage() {
     : requiresPhysicalOnly && deliveryMethod === 'digital'
       ? 'Digital fulfilment is not valid for physical products. Choose postal, local, or collection.'
       : ''
+
+  useEffect(() => {
+    if (requiresDigitalOnly) {
+      setValue('delivery_method', 'digital')
+      setValue('delivery_zone', undefined)
+    }
+  }, [requiresDigitalOnly, setValue])
 
   function onSubmit(values: FormValues) {
     if (!hasItems || hasQuoteOnly || (hasDigital && hasPhysical) || fulfilmentMismatch) return
@@ -157,6 +165,12 @@ export default function CartPage() {
                         >
                           Remove
                         </button>
+                      </div>
+
+                      <div className="mt-3 inline-flex items-center gap-2 rounded-full border border-[var(--cream)] bg-[#F9F2EC] px-3 py-2 text-xs text-[var(--text-secondary)]">
+                        {item.fulfilment_class === 'digital' ? 'Digital product — no shipping required.'
+                          : item.fulfilment_class === 'quote_only' ? 'Quote-only item — enquiry required.'
+                          : 'Physical product — select delivery below.'}
                       </div>
 
                       <div className="mt-5 grid gap-4 sm:grid-cols-[1fr,1.2fr] items-center">
@@ -239,38 +253,53 @@ export default function CartPage() {
                   />
                 </div>
 
-                <div>
-                  <label className="block text-xs font-medium text-[var(--text-secondary)] mb-2">Fulfilment method</label>
-                  <div className="grid gap-2 sm:grid-cols-2">
-                    {[
-                      { value: 'postal', label: 'UK postal delivery' },
-                      { value: 'local', label: 'Local hand delivery' },
-                      { value: 'collection', label: 'Collection' },
-                      { value: 'digital', label: 'Digital fulfilment' },
-                    ].map((option) => (
-                      <label key={option.value} className="inline-flex items-center gap-3 rounded-2xl border border-[var(--cream)] bg-[#FDF7F2] px-4 py-3 text-sm cursor-pointer">
-                        <input
-                          {...register('delivery_method')}
-                          type="radio"
-                          value={option.value}
-                          className="h-4 w-4 accent-[var(--peach)]"
-                        />
-                        <span>{option.label}</span>
-                      </label>
-                    ))}
+                {requiresDigitalOnly ? (
+                  <div className="rounded-3xl border border-[var(--cream)] bg-[#F9F2EC] p-5 text-sm">
+                    <p className="font-semibold mb-2">Digital fulfilment</p>
+                    <p className="text-[var(--text-secondary)]">Your order only contains digital products, so no delivery zone selection is required.</p>
+                    <input type="hidden" value="digital" {...register('delivery_method')} />
                   </div>
-                </div>
+                ) : (
+                  <>
+                    <div>
+                      <label className="block text-xs font-medium text-[var(--text-secondary)] mb-2">Fulfilment method</label>
+                      <div className="grid gap-2 sm:grid-cols-2">
+                        {[
+                          { value: 'postal', label: 'UK postal delivery' },
+                          { value: 'local', label: 'Local hand delivery' },
+                          { value: 'collection', label: 'Collection' },
+                        ].map((option) => (
+                          <label key={option.value} className="inline-flex items-center gap-3 rounded-2xl border border-[var(--cream)] bg-[#FDF7F2] px-4 py-3 text-sm cursor-pointer">
+                            <input
+                              {...register('delivery_method')}
+                              type="radio"
+                              value={option.value}
+                              className="h-4 w-4 accent-[var(--peach)]"
+                            />
+                            <span>{option.label}</span>
+                          </label>
+                        ))}
+                      </div>
+                    </div>
 
-                {(deliveryMethod === 'postal' || deliveryMethod === 'local') && (
-                  <div>
-                    <label className="block text-xs font-medium text-[var(--text-secondary)] mb-2">Postcode</label>
-                    <input
-                      {...register('delivery_postcode')}
-                      className="w-full rounded-2xl border border-[var(--cream)] bg-[#FDF7F2] px-4 py-3 text-sm outline-none"
-                      placeholder="e.g. SW1A 1AA"
-                    />
-                    {errors.delivery_postcode && <p className="text-red-500 text-xs mt-1">{errors.delivery_postcode.message}</p>}
-                  </div>
+                    {(deliveryMethod === 'postal' || deliveryMethod === 'local') && (
+                      <div>
+                        <label className="block text-xs font-medium text-[var(--text-secondary)] mb-2">Delivery zone</label>
+                        <select
+                          {...register('delivery_zone')}
+                          className="w-full rounded-2xl border border-[var(--cream)] bg-[#FDF7F2] px-4 py-3 text-sm outline-none"
+                        >
+                          <option value="">Select a delivery zone</option>
+                          {ZONE_OPTIONS.map(option => (
+                            <option key={option.value} value={option.value}>
+                              {option.label} — {option.description}
+                            </option>
+                          ))}
+                        </select>
+                        {errors.delivery_zone && <p className="text-red-500 text-xs mt-1">{errors.delivery_zone.message}</p>}
+                      </div>
+                    )}
+                  </>
                 )}
 
                 <div className="rounded-3xl border border-[var(--cream)] bg-[#F9F2EC] p-5 text-sm leading-relaxed">

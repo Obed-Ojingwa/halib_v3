@@ -15,7 +15,6 @@ class Order(Base):
     delivery_date: Mapped[date] = mapped_column(Date, nullable=False)
     delivery_type: Mapped[str] = mapped_column(String(50), nullable=False, default='delivery')
     delivery_method: Mapped[str] = mapped_column(String(50), nullable=False, default='postal')
-    delivery_postcode: Mapped[str | None] = mapped_column(String(30), nullable=True)
     delivery_zone: Mapped[str | None] = mapped_column(String(30), nullable=True)
     shipping_fee: Mapped[float] = mapped_column(Numeric(10, 2), nullable=False, default=0.0)
     currency: Mapped[str] = mapped_column(String(10), nullable=False, default='GBP')

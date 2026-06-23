@@ -1,6 +1,24 @@
 export type FulfilmentMethod = 'postal' | 'local' | 'collection' | 'digital'
 export type DeliveryZone = 'Zone 1' | 'Zone 2' | 'Zone 3'
 
+export const ZONE_OPTIONS = [
+  {
+    value: 'Zone 1' as DeliveryZone,
+    label: 'Zone 1 — London inner',
+    description: 'E, EC, N, NW, SE, SW, W, WC',
+  },
+  {
+    value: 'Zone 2' as DeliveryZone,
+    label: 'Zone 2 — Greater London outskirts',
+    description: 'BR, CR, DA, HA, IG, KT, RM, SE, SM, SW, TW, UB, WD',
+  },
+  {
+    value: 'Zone 3' as DeliveryZone,
+    label: 'Zone 3 — Rest of UK',
+    description: 'All other UK postcodes',
+  },
+]
+
 const ZONE_1_PREFIXES = [
   'E', 'EC', 'N', 'NW', 'SE', 'SW', 'W', 'WC',
 ]
@@ -14,7 +32,6 @@ const LOCAL_POSTCODE_PREFIXES = [
 
 export interface ShippingQuote {
   method: FulfilmentMethod
-  postcode?: string
   zone?: DeliveryZone
   fee: number
   available: boolean
@@ -24,6 +41,15 @@ export interface ShippingQuote {
 export function normalizePostcode(value: string | undefined | null): string {
   if (!value) return ''
   return value.trim().toUpperCase().replace(/\s+/g, ' ')
+}
+
+export function normalizeZone(value: string | undefined | null): DeliveryZone | null {
+  if (!value) return null
+  const normalized = value.trim().toLowerCase()
+  if (normalized === 'zone 1' || normalized === 'zone1') return 'Zone 1'
+  if (normalized === 'zone 2' || normalized === 'zone2') return 'Zone 2'
+  if (normalized === 'zone 3' || normalized === 'zone3') return 'Zone 3'
+  return null
 }
 
 export function getOutwardCode(postcode: string): string | null {
@@ -43,21 +69,30 @@ export function getDeliveryZone(postcode: string): DeliveryZone | null {
   return null
 }
 
-export function isLocalDeliveryAllowed(postcode: string): boolean {
-  const outward = getOutwardCode(postcode)
+export function resolveDeliveryZone(value: string | undefined | null): DeliveryZone | null {
+  if (!value) return null
+  const zone = normalizeZone(value)
+  if (zone) return zone
+  return getDeliveryZone(value)
+}
+
+export function isLocalDeliveryAllowed(postcodeOrZone: string): boolean {
+  const zone = resolveDeliveryZone(postcodeOrZone)
+  if (zone) {
+    return zone !== 'Zone 3'
+  }
+  const outward = getOutwardCode(postcodeOrZone)
   if (!outward) return false
   const prefix = outward.replace(/\d.*$/, '')
   return LOCAL_POSTCODE_PREFIXES.includes(prefix)
 }
 
-export function getShippingFee(method: FulfilmentMethod, postcode?: string): number {
-  const normalizedPostcode = normalizePostcode(postcode)
-
+export function getShippingFee(method: FulfilmentMethod, postcodeOrZone?: string): number {
   if (method === 'collection' || method === 'digital') {
     return 0
   }
 
-  const zone = getDeliveryZone(normalizedPostcode)
+  const zone = resolveDeliveryZone(postcodeOrZone)
   if (!zone) {
     return 0
   }
@@ -77,11 +112,9 @@ export function getShippingFee(method: FulfilmentMethod, postcode?: string): num
   return 0
 }
 
-export function getShippingQuote(method: FulfilmentMethod, postcode?: string): ShippingQuote {
-  const normalizedPostcode = normalizePostcode(postcode)
+export function getShippingQuote(method: FulfilmentMethod, postcodeOrZone?: string): ShippingQuote {
   const quote: ShippingQuote = {
     method,
-    postcode: normalizedPostcode || undefined,
     fee: 0,
     available: true,
   }
@@ -96,25 +129,25 @@ export function getShippingQuote(method: FulfilmentMethod, postcode?: string): S
     return quote
   }
 
-  if (!normalizedPostcode) {
+  if (!postcodeOrZone) {
     quote.available = false
-    quote.message = 'Enter a UK postcode to calculate shipping.'
+    quote.message = 'Select a delivery zone to calculate shipping.'
     return quote
   }
 
-  const zone = getDeliveryZone(normalizedPostcode)
+  const zone = resolveDeliveryZone(postcodeOrZone)
   if (!zone) {
     quote.available = false
-    quote.message = 'Please enter a valid UK postcode.'
+    quote.message = 'Select a valid delivery zone.'
     return quote
   }
 
   quote.zone = zone
-  quote.fee = getShippingFee(method, normalizedPostcode)
+  quote.fee = getShippingFee(method, zone)
 
   if (method === 'local' && quote.fee === 0) {
     quote.available = false
-    quote.message = 'Local hand delivery is not available for this postcode.'
+    quote.message = 'Local hand delivery is not available for this zone.'
     return quote
   }
 
